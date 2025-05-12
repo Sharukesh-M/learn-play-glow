@@ -92,7 +92,7 @@ const PlayQuiz = () => {
   };
 
   const calculateScore = () => {
-    if (!quiz) return 0;
+    if (!quiz) return { totalScore: 0, correctAnswers: 0 };
     
     let totalScore = 0;
     let correctAnswers = 0;
@@ -290,3 +290,4 @@ const PlayQuiz = () => {
 };
 
 export default PlayQuiz;
+

@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, BookOpen, Trophy } from "lucide-react";
+import { Search, Plus, BookOpen, Trophy, ChartBarIcon } from "lucide-react";
 import QuizCard from "@/components/quiz/QuizCard";
 import { generateMockQuizzes, CATEGORIES } from "@/utils/mockData";
 
@@ -177,7 +177,7 @@ const Index = () => {
 
           <div className="quiz-card text-center p-6 flex flex-col items-center">
             <div className="h-16 w-16 rounded-full bg-gradient-to-br from-quiz-blue to-blue-400 flex items-center justify-center mb-4">
-              <BarChart className="h-8 w-8 text-white" />
+              <ChartBarIcon className="h-8 w-8 text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Track Progress</h3>
             <p className="text-muted-foreground">
