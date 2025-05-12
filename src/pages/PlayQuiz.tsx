@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -33,65 +33,8 @@ const PlayQuiz = () => {
     }
   }, [quiz, navigate, quizStarted, currentQuestionIndex]);
 
-  // Timer functionality
-  useEffect(() => {
-    if (!quizStarted || !quiz || quizCompleted || showResult) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          // Time's up for this question
-          if (currentQuestionIndex < quiz.questions.length - 1) {
-            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-            return quiz.questions[currentQuestionIndex + 1].timeLimit;
-          } else {
-            // Quiz ended due to time
-            clearInterval(timer);
-            calculateScore();
-            setQuizCompleted(true);
-            setShowResult(true);
-            return 0;
-          }
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [quizStarted, currentQuestionIndex, quiz, quizCompleted, showResult]);
-
-  const startQuiz = () => {
-    setQuizStarted(true);
-    toast.success("Quiz started! Good luck!");
-  };
-
-  const handleAnswerSelected = (answerId: string) => {
-    setSelectedAnswers({
-      ...selectedAnswers,
-      [quiz!.questions[currentQuestionIndex].id]: answerId,
-    });
-  };
-
-  const nextQuestion = () => {
-    if (currentQuestionIndex < quiz!.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setTimeLeft(quiz!.questions[currentQuestionIndex + 1].timeLimit);
-    } else {
-      calculateScore();
-      setQuizCompleted(true);
-      setShowResult(true);
-      toast.success("Quiz completed! Let's see your results.");
-    }
-  };
-
-  const prevQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setTimeLeft(quiz!.questions[currentQuestionIndex - 1].timeLimit);
-    }
-  };
-
-  const calculateScore = () => {
+  // Calculate score function moved outside of render to prevent unnecessary recalculations
+  const calculateScore = useCallback(() => {
     if (!quiz) return { totalScore: 0, correctAnswers: 0 };
     
     let totalScore = 0;
@@ -108,9 +51,78 @@ const PlayQuiz = () => {
       }
     });
     
-    setScore(totalScore);
     return { totalScore, correctAnswers };
+  }, [quiz, selectedAnswers]);
+
+  // Timer functionality
+  useEffect(() => {
+    if (!quizStarted || !quiz || quizCompleted || showResult) return;
+    
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          // Time's up for this question
+          if (currentQuestionIndex < quiz.questions.length - 1) {
+            // Don't modify state directly in the timer callback
+            // Instead, set a flag to handle in the next render cycle
+            clearInterval(timer);
+            setCurrentQuestionIndex(prev => prev + 1);
+            return quiz.questions[currentQuestionIndex + 1]?.timeLimit || 30;
+          } else {
+            // Quiz ended due to time
+            clearInterval(timer);
+            const { totalScore } = calculateScore();
+            setScore(totalScore);
+            setQuizCompleted(true);
+            setShowResult(true);
+            return 0;
+          }
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quizStarted, currentQuestionIndex, quiz, quizCompleted, showResult, calculateScore]);
+
+  const startQuiz = () => {
+    setQuizStarted(true);
+    toast.success("Quiz started! Good luck!");
   };
+
+  const handleAnswerSelected = (answerId: string) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [quiz!.questions[currentQuestionIndex].id]: answerId,
+    }));
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestionIndex < quiz!.questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      // Update timeLeft in a separate effect that responds to currentQuestionIndex changes
+    } else {
+      const { totalScore } = calculateScore();
+      setScore(totalScore);
+      setQuizCompleted(true);
+      setShowResult(true);
+      toast.success("Quiz completed! Let's see your results.");
+    }
+  };
+
+  const prevQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+      // Update timeLeft in a separate effect that responds to currentQuestionIndex changes
+    }
+  };
+
+  // Effect to update the timer whenever currentQuestionIndex changes
+  useEffect(() => {
+    if (quiz && quizStarted && !quizCompleted && !showResult) {
+      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || 30);
+    }
+  }, [currentQuestionIndex, quiz, quizStarted, quizCompleted, showResult]);
 
   if (!quiz) return null;
 
@@ -290,4 +302,3 @@ const PlayQuiz = () => {
 };
 
 export default PlayQuiz;
-
