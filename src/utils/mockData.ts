@@ -1,3 +1,4 @@
+
 import { Quiz, QuestionType } from "../types/quiz";
 
 // Updated categories to include entrance exam subjects
@@ -658,3 +659,478 @@ const SUBJECT_QUESTIONS = {
     {
       question: "Who is the founder of Microsoft?",
       options: [
+        "Steve Jobs",
+        "Bill Gates",
+        "Mark Zuckerberg",
+        "Jeff Bezos"
+      ],
+      correctOption: 1,
+      explanation: "Bill Gates co-founded Microsoft with Paul Allen in 1975. Gates served as CEO until 2000, then as chairman until 2014. Microsoft became the world's largest personal computer software company, and Gates became one of the world's wealthiest individuals."
+    }
+  ]
+};
+
+// Create exam-specific question sets with explanations
+// All questions follow the QuestionType for proper typing
+const generateMockExamQuestions = (subjects, count = 20) => {
+  let questions = [];
+  
+  for (let i = 0; i < count; i++) {
+    const subject = subjects[Math.floor(Math.random() * subjects.length)];
+    
+    if (SUBJECT_QUESTIONS[subject] && SUBJECT_QUESTIONS[subject].length > 0) {
+      const randomQuestion = SUBJECT_QUESTIONS[subject][Math.floor(Math.random() * SUBJECT_QUESTIONS[subject].length)];
+      
+      questions.push({
+        id: `q-${Date.now()}-${i}`,
+        type: QuestionType.MULTIPLE_CHOICE,
+        text: randomQuestion.question,
+        points: 10,
+        timeLimit: 60,
+        answers: randomQuestion.options.map((option, idx) => ({
+          id: `a-${i}-${idx}`,
+          text: option,
+          isCorrect: idx === randomQuestion.correctOption
+        })),
+        explanation: randomQuestion.explanation
+      });
+    }
+  }
+  
+  return questions;
+};
+
+// Example quizzes for different exams with explanations
+export const mockQuizzes = [
+  {
+    id: "upsc-1",
+    title: "UPSC Civil Services Prelims Mock Test",
+    description: "Prepare for the UPSC Civil Services Preliminary Examination with this comprehensive mock test covering key topics.",
+    thumbnail: "/placeholder.svg",
+    category: "UPSC",
+    difficulty: "Hard",
+    timeLimit: 120,
+    tags: ["UPSC", "Civil Services", "IAS", "Current Affairs", "General Knowledge"],
+    author: "UPSC Guru",
+    dateCreated: "2025-01-15",
+    questions: generateMockExamQuestions(EXAM_QUESTION_BANKS["UPSC"], 30)
+  },
+  {
+    id: "neet-1",
+    title: "NEET Biology Practice Test",
+    description: "Test your Biology knowledge with this NEET-focused practice quiz covering important concepts and previous years' questions.",
+    thumbnail: "/placeholder.svg",
+    category: "Biology",
+    difficulty: "Medium",
+    timeLimit: 45,
+    tags: ["NEET", "Biology", "Medical Entrance", "Science"],
+    author: "Dr. LifeSciences",
+    dateCreated: "2025-02-10",
+    questions: generateMockExamQuestions(EXAM_QUESTION_BANKS["NEET"], 25)
+  },
+  {
+    id: "jee-1",
+    title: "JEE Main Physics Challenge",
+    description: "Challenge yourself with this JEE Main level Physics quiz covering mechanics, electromagnetics, and modern physics.",
+    thumbnail: "/placeholder.svg",
+    category: "Physics",
+    difficulty: "Hard",
+    timeLimit: 30,
+    tags: ["JEE", "Physics", "Engineering Entrance", "Science"],
+    author: "IIT Master",
+    dateCreated: "2025-01-28",
+    questions: generateMockExamQuestions(["Physics"], 20)
+  },
+  {
+    id: "cat-1",
+    title: "CAT Quantitative Aptitude Quiz",
+    description: "Sharpen your quantitative aptitude skills with this CAT-focused quiz covering arithmetic, algebra, and data interpretation.",
+    thumbnail: "/placeholder.svg",
+    category: "Math",
+    difficulty: "Hard",
+    timeLimit: 40,
+    tags: ["CAT", "MBA Entrance", "Quantitative Aptitude", "Math"],
+    author: "MBA Prep Coach",
+    dateCreated: "2025-02-05",
+    questions: generateMockExamQuestions(["Math"], 20)
+  },
+  {
+    id: "gate-cs-1",
+    title: "GATE Computer Science Practice Test",
+    description: "Prepare for GATE CS with this comprehensive quiz covering data structures, algorithms, operating systems, and more.",
+    thumbnail: "/placeholder.svg",
+    category: "Computer Science",
+    difficulty: "Hard",
+    timeLimit: 60,
+    tags: ["GATE", "Computer Science", "Engineering Entrance"],
+    author: "CS Professor",
+    dateCreated: "2025-01-20",
+    questions: generateMockExamQuestions(["Computer Science"], 25)
+  },
+  {
+    id: "gk-current-1",
+    title: "Current Affairs Mastery Quiz",
+    description: "Stay updated with this current affairs quiz covering recent national and international events, perfect for all competitive exams.",
+    thumbnail: "/placeholder.svg",
+    category: "Current Affairs",
+    difficulty: "Medium",
+    timeLimit: 20,
+    tags: ["Current Affairs", "General Knowledge", "Competitive Exams"],
+    author: "News Expert",
+    dateCreated: "2025-03-01",
+    questions: generateMockExamQuestions(["General Knowledge"], 20)
+  },
+  {
+    id: "school-science-1",
+    title: "High School Science Challenge",
+    description: "Test your science knowledge with this comprehensive quiz covering Physics, Chemistry, and Biology topics for high school students.",
+    thumbnail: "/placeholder.svg",
+    category: "Science",
+    difficulty: "Medium",
+    timeLimit: 30,
+    tags: ["K-12", "Science", "Physics", "Chemistry", "Biology"],
+    author: "Science Teacher",
+    dateCreated: "2025-02-15",
+    questions: generateMockExamQuestions(["Physics", "Chemistry", "Biology"], 15)
+  },
+  {
+    id: "history-1",
+    title: "World History Explorer",
+    description: "Journey through time with this world history quiz covering ancient civilizations to modern events.",
+    thumbnail: "/placeholder.svg",
+    category: "History",
+    difficulty: "Medium",
+    timeLimit: 25,
+    tags: ["History", "General Knowledge", "UPSC"],
+    author: "History Buff",
+    dateCreated: "2025-01-10",
+    questions: generateMockExamQuestions(["History"], 20)
+  },
+  {
+    id: "economics-1",
+    title: "Economics Fundamentals Quiz",
+    description: "Test your understanding of basic economic principles, perfect for students and competitive exam aspirants.",
+    thumbnail: "/placeholder.svg",
+    category: "Economics",
+    difficulty: "Medium",
+    timeLimit: 30,
+    tags: ["Economics", "UPSC", "College"],
+    author: "EconProf",
+    dateCreated: "2025-02-20",
+    questions: generateMockExamQuestions(["Economics"], 20)
+  },
+  {
+    id: "math-challenge-1",
+    title: "Mathematics Challenge",
+    description: "Challenge your mathematical skills with problems ranging from algebra to calculus.",
+    thumbnail: "/placeholder.svg",
+    category: "Math",
+    difficulty: "Hard",
+    timeLimit: 45,
+    tags: ["Math", "JEE", "K-12", "College"],
+    author: "Math Wizard",
+    dateCreated: "2025-01-05",
+    questions: generateMockExamQuestions(["Math"], 20)
+  },
+  // Add more quizzes for different categories and exam types
+  {
+    id: "physics-advanced-1",
+    title: "Advanced Physics Concepts",
+    description: "Delve into advanced physics concepts including quantum mechanics and relativity.",
+    thumbnail: "/placeholder.svg",
+    category: "Physics",
+    difficulty: "Hard",
+    timeLimit: 40,
+    tags: ["Physics", "Science", "College", "JEE", "GATE"],
+    author: "Quantum Physicist",
+    dateCreated: "2025-02-25",
+    questions: generateMockExamQuestions(["Physics"], 20)
+  },
+  {
+    id: "chemistry-organic-1",
+    title: "Organic Chemistry Deep Dive",
+    description: "Explore the fascinating world of organic chemistry with this comprehensive quiz.",
+    thumbnail: "/placeholder.svg",
+    category: "Chemistry",
+    difficulty: "Hard",
+    timeLimit: 35,
+    tags: ["Chemistry", "Science", "NEET", "JEE"],
+    author: "ChemistryPro",
+    dateCreated: "2025-03-05",
+    questions: generateMockExamQuestions(["Chemistry"], 20)
+  },
+  {
+    id: "biology-human-1",
+    title: "Human Biology Explorer",
+    description: "Test your knowledge about the human body, anatomy, and physiology.",
+    thumbnail: "/placeholder.svg",
+    category: "Biology",
+    difficulty: "Medium",
+    timeLimit: 30,
+    tags: ["Biology", "Science", "NEET", "Medical"],
+    author: "Anatomy Expert",
+    dateCreated: "2025-02-18",
+    questions: generateMockExamQuestions(["Biology"], 20)
+  },
+  {
+    id: "computer-science-1",
+    title: "Computer Science Fundamentals",
+    description: "Review the core concepts of computer science with this comprehensive quiz.",
+    thumbnail: "/placeholder.svg",
+    category: "Computer Science",
+    difficulty: "Medium",
+    timeLimit: 35,
+    tags: ["Computer Science", "Technology", "GATE", "Engineering"],
+    author: "CodeMaster",
+    dateCreated: "2025-01-30",
+    questions: generateMockExamQuestions(["Computer Science"], 20)
+  },
+  {
+    id: "aptitude-1",
+    title: "Logical Reasoning & Aptitude Test",
+    description: "Sharpen your logical thinking and problem-solving skills with this aptitude test.",
+    thumbnail: "/placeholder.svg",
+    category: "Aptitude",
+    difficulty: "Medium",
+    timeLimit: 25,
+    tags: ["Aptitude", "Reasoning", "CAT", "Professional"],
+    author: "Logic Guru",
+    dateCreated: "2025-02-12",
+    questions: generateMockExamQuestions(["Math"], 20)
+  }
+];
+
+// Add IELTS practice tests
+const ieltsReadingQuiz = {
+  id: "ielts-reading-1",
+  title: "IELTS Reading Practice Test",
+  description: "Prepare for the IELTS Reading section with this practice test featuring various question types and passage complexities.",
+  thumbnail: "/placeholder.svg",
+  category: "English",
+  difficulty: "Hard",
+  timeLimit: 60,
+  tags: ["IELTS", "English", "Reading", "Language"],
+  author: "IELTS Trainer",
+  dateCreated: "2025-02-22",
+  questions: [
+    {
+      id: "ielts-r-1",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Based on the passage about climate change, which of the following is NOT mentioned as a consequence of global warming?",
+      points: 5,
+      timeLimit: 90,
+      answers: [
+        { id: "r1-a", text: "Rising sea levels", isCorrect: false },
+        { id: "r1-b", text: "Increased frequency of hurricanes", isCorrect: false },
+        { id: "r1-c", text: "Decline in global fish populations", isCorrect: true },
+        { id: "r1-d", text: "Shifts in agricultural growing seasons", isCorrect: false }
+      ],
+      explanation: "The passage discusses rising sea levels, increased hurricane frequency, and agricultural changes, but does not mention the decline in fish populations as a direct consequence of global warming."
+    },
+    {
+      id: "ielts-r-2",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "According to the passage on urban development, what is the main challenge facing city planners in the 21st century?",
+      points: 5,
+      timeLimit: 90,
+      answers: [
+        { id: "r2-a", text: "Reducing crime rates", isCorrect: false },
+        { id: "r2-b", text: "Creating sustainable infrastructure while accommodating growing populations", isCorrect: true },
+        { id: "r2-c", text: "Preserving historical architecture", isCorrect: false },
+        { id: "r2-d", text: "Generating tourism revenue", isCorrect: false }
+      ],
+      explanation: "The passage emphasizes that the primary challenge for modern urban planners is balancing the need for sustainable infrastructure with the pressures of rapidly growing urban populations."
+    }
+  ]
+};
+
+// Additional quizzes for various exams and subjects
+mockQuizzes.push(ieltsReadingQuiz);
+
+// Generate mock quizzes for English Literature
+const englishLitQuiz = {
+  id: "english-lit-1",
+  title: "English Literature Classics",
+  description: "Test your knowledge of classic English literature from Shakespeare to Dickens and beyond.",
+  thumbnail: "/placeholder.svg",
+  category: "Literature",
+  difficulty: "Medium",
+  timeLimit: 30,
+  tags: ["Literature", "English", "College", "Professional"],
+  author: "LiteraryScholar",
+  dateCreated: "2025-02-14",
+  questions: [
+    {
+      id: "lit-q1",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Who wrote 'Pride and Prejudice'?",
+      points: 10,
+      timeLimit: 30,
+      answers: [
+        { id: "lit-q1-a", text: "Charlotte Brontë", isCorrect: false },
+        { id: "lit-q1-b", text: "Jane Austen", isCorrect: true },
+        { id: "lit-q1-c", text: "Emily Brontë", isCorrect: false },
+        { id: "lit-q1-d", text: "Virginia Woolf", isCorrect: false }
+      ],
+      explanation: "Jane Austen published 'Pride and Prejudice' in 1813. It's considered one of the most popular novels in English literature, known for its wit, social commentary, and exploration of themes like marriage, morality, and social status."
+    },
+    {
+      id: "lit-q2",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Which Shakespeare play features the character Othello?",
+      points: 10,
+      timeLimit: 30,
+      answers: [
+        { id: "lit-q2-a", text: "Macbeth", isCorrect: false },
+        { id: "lit-q2-b", text: "Hamlet", isCorrect: false },
+        { id: "lit-q2-c", text: "Othello", isCorrect: true },
+        { id: "lit-q2-d", text: "King Lear", isCorrect: false }
+      ],
+      explanation: "The character Othello is the protagonist of Shakespeare's tragedy 'Othello'. The play explores themes of racism, jealousy, betrayal, and revenge through the story of Othello, a Moorish general in the Venetian army."
+    }
+  ]
+};
+
+// Push additional quizzes to the mockQuizzes array
+mockQuizzes.push(englishLitQuiz);
+
+// Generate UPSC-specific topics
+const upscPoliticsQuiz = {
+  id: "upsc-polity-1",
+  title: "Indian Polity for UPSC",
+  description: "Master the Indian Constitution and Political System with this comprehensive quiz for UPSC aspirants.",
+  thumbnail: "/placeholder.svg",
+  category: "Political Science",
+  difficulty: "Hard",
+  timeLimit: 45,
+  tags: ["UPSC", "Indian Polity", "Constitution", "Civil Services"],
+  author: "UPSC Mentor",
+  dateCreated: "2025-01-25",
+  questions: [
+    {
+      id: "upsc-pol-1",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Which Article of the Indian Constitution abolishes untouchability?",
+      points: 10,
+      timeLimit: 45,
+      answers: [
+        { id: "pol-1-a", text: "Article 14", isCorrect: false },
+        { id: "pol-1-b", text: "Article 17", isCorrect: true },
+        { id: "pol-1-c", text: "Article 21", isCorrect: false },
+        { id: "pol-1-d", text: "Article 32", isCorrect: false }
+      ],
+      explanation: "Article 17 of the Indian Constitution abolishes untouchability and forbids its practice in any form. It is part of the Fundamental Rights guaranteed to all citizens."
+    },
+    {
+      id: "upsc-pol-2",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Who among the following was the Chairman of the Drafting Committee of the Indian Constitution?",
+      points: 10,
+      timeLimit: 45,
+      answers: [
+        { id: "pol-2-a", text: "Jawaharlal Nehru", isCorrect: false },
+        { id: "pol-2-b", text: "Rajendra Prasad", isCorrect: false },
+        { id: "pol-2-c", text: "B.R. Ambedkar", isCorrect: true },
+        { id: "pol-2-d", text: "Sardar Vallabhbhai Patel", isCorrect: false }
+      ],
+      explanation: "Dr. B.R. Ambedkar served as the Chairman of the Drafting Committee of the Indian Constitution. He is often referred to as the 'Father of the Indian Constitution' for his pivotal role in its creation."
+    }
+  ]
+};
+
+// Push more subject-specific quizzes
+mockQuizzes.push(upscPoliticsQuiz);
+
+// Create Economics quiz for competitive exams
+const economicsQuiz = {
+  id: "economics-advanced-1",
+  title: "Advanced Economic Concepts",
+  description: "Explore macroeconomics, microeconomics, and international economics with this comprehensive quiz.",
+  thumbnail: "/placeholder.svg",
+  category: "Economics",
+  difficulty: "Hard",
+  timeLimit: 40,
+  tags: ["Economics", "UPSC", "College", "CAT"],
+  author: "EconomicsProf",
+  dateCreated: "2025-02-08",
+  questions: [
+    {
+      id: "econ-1",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Which of the following is NOT a characteristic of a perfectly competitive market?",
+      points: 10,
+      timeLimit: 45,
+      answers: [
+        { id: "econ-1-a", text: "Large number of buyers and sellers", isCorrect: false },
+        { id: "econ-1-b", text: "Homogeneous products", isCorrect: false },
+        { id: "econ-1-c", text: "Price differentiation", isCorrect: true },
+        { id: "econ-1-d", text: "Free entry and exit", isCorrect: false }
+      ],
+      explanation: "Price differentiation is NOT a characteristic of a perfectly competitive market. In perfect competition, firms are price takers and sell identical products at the market price. Price differentiation is a feature of monopolistic competition or oligopoly."
+    },
+    {
+      id: "econ-2",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "What is the Phillips Curve used to illustrate?",
+      points: 10,
+      timeLimit: 45,
+      answers: [
+        { id: "econ-2-a", text: "The relationship between inflation and unemployment", isCorrect: true },
+        { id: "econ-2-b", text: "The relationship between interest rates and investment", isCorrect: false },
+        { id: "econ-2-c", text: "The relationship between taxes and government spending", isCorrect: false },
+        { id: "econ-2-d", text: "The relationship between imports and exports", isCorrect: false }
+      ],
+      explanation: "The Phillips Curve illustrates the inverse relationship between inflation and unemployment in an economy. It suggests that lower unemployment is associated with higher inflation, and vice versa, although this relationship has been debated and modified over time."
+    }
+  ]
+};
+
+// Add the economics quiz to the mockQuizzes array
+mockQuizzes.push(economicsQuiz);
+
+// Add a Geography quiz for competitive exams
+const geographyQuiz = {
+  id: "geography-1",
+  title: "World Geography Master Quiz",
+  description: "Test your knowledge of physical and human geography from around the world.",
+  thumbnail: "/placeholder.svg",
+  category: "Geography",
+  difficulty: "Medium",
+  timeLimit: 35,
+  tags: ["Geography", "UPSC", "K-12", "General Knowledge"],
+  author: "GeoExplorer",
+  dateCreated: "2025-01-18",
+  questions: [
+    {
+      id: "geo-1",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Which of the following straits connects the Mediterranean Sea to the Atlantic Ocean?",
+      points: 10,
+      timeLimit: 40,
+      answers: [
+        { id: "geo-1-a", text: "Strait of Hormuz", isCorrect: false },
+        { id: "geo-1-b", text: "Strait of Gibraltar", isCorrect: true },
+        { id: "geo-1-c", text: "Bering Strait", isCorrect: false },
+        { id: "geo-1-d", text: "Strait of Malacca", isCorrect: false }
+      ],
+      explanation: "The Strait of Gibraltar connects the Mediterranean Sea to the Atlantic Ocean and separates the Iberian Peninsula (Spain/Portugal) from Morocco in North Africa. It's a strategic waterway for shipping and naval operations."
+    },
+    {
+      id: "geo-2",
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: "Which of these countries does NOT share a land border with India?",
+      points: 10,
+      timeLimit: 40,
+      answers: [
+        { id: "geo-2-a", text: "Myanmar", isCorrect: false },
+        { id: "geo-2-b", text: "Afghanistan", isCorrect: false },
+        { id: "geo-2-c", text: "Sri Lanka", isCorrect: true },
+        { id: "geo-2-d", text: "Nepal", isCorrect: false }
+      ],
+      explanation: "Sri Lanka does not share a land border with India. It is an island nation separated from India by the Palk Strait. India shares land borders with Pakistan, China, Nepal, Bhutan, Myanmar, and Bangladesh, and a contested border with Afghanistan."
+    }
+  ]
+};
+
+// Add the geography quiz to the mockQuizzes array
+mockQuizzes.push(geographyQuiz);
