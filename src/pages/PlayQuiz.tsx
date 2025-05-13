@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ResponsiveBar } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const PlayQuiz = () => {
   const { quizId } = useParams<{ quizId: string }>();
@@ -413,39 +412,20 @@ const PlayQuiz = () => {
                     }
                   }}
                 >
-                  <ResponsiveBar
-                    data={chartData}
-                    keys={["correct", "incorrect"]}
-                    indexBy="name"
-                    margin={{ top: 20, right: 30, bottom: 50, left: 60 }}
-                    padding={0.3}
-                    colors={["var(--color-correct)", "var(--color-incorrect)"]}
-                    axisBottom={{
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                    }}
-                    axisLeft={{
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                    }}
-                    labelSkipWidth={12}
-                    labelSkipHeight={12}
-                    legends={[
-                      {
-                        dataFrom: "keys",
-                        anchor: "bottom",
-                        direction: "row",
-                        justify: false,
-                        translateX: 0,
-                        translateY: 50,
-                        itemsSpacing: 2,
-                        itemWidth: 100,
-                        itemHeight: 20,
-                      },
-                    ]}
-                  />
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={chartData}
+                      margin={{ top: 20, right: 30, bottom: 50, left: 30 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+                      <Bar dataKey="correct" name="Correct" fill="var(--color-correct)" />
+                      <Bar dataKey="incorrect" name="Incorrect" fill="var(--color-incorrect)" />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </ChartContainer>
               </div>
             </div>
