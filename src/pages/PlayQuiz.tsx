@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Clock, Trophy } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Trophy, AlertCircle } from "lucide-react";
 import QuestionCard from "@/components/quiz/QuestionCard";
 import { generateMockQuizzes } from "@/utils/mockData";
 
@@ -21,6 +20,8 @@ const PlayQuiz = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(0);
+  const [timeWarning, setTimeWarning] = useState(false);
+  const [timerPaused, setTimerPaused] = useState(false);
   
   // If no quiz found, redirect to home page
   useEffect(() => {
@@ -56,34 +57,34 @@ const PlayQuiz = () => {
 
   // Timer functionality
   useEffect(() => {
-    if (!quizStarted || !quiz || quizCompleted || showResult) return;
+    if (!quizStarted || !quiz || quizCompleted || showResult || timerPaused) return;
     
     const timer = setInterval(() => {
+      // Show warning when less than 5 seconds remain
+      if (timeLeft <= 6 && timeLeft > 5) {
+        setTimeWarning(true);
+      }
+      
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
-          // Time's up for this question
-          if (currentQuestionIndex < quiz.questions.length - 1) {
-            // Don't modify state directly in the timer callback
-            // Instead, set a flag to handle in the next render cycle
-            clearInterval(timer);
-            setCurrentQuestionIndex(prev => prev + 1);
-            return quiz.questions[currentQuestionIndex + 1]?.timeLimit || 30;
-          } else {
-            // Quiz ended due to time
-            clearInterval(timer);
-            const { totalScore } = calculateScore();
-            setScore(totalScore);
-            setQuizCompleted(true);
-            setShowResult(true);
-            return 0;
-          }
+          // Time's up for this question but DON'T automatically advance
+          clearInterval(timer);
+          
+          // Instead of advancing, notify user that time is up
+          toast.warning("Time's up for this question!", {
+            description: "Please select an answer or move to the next question."
+          });
+          
+          // Pause the timer instead of automatically advancing
+          setTimerPaused(true);
+          return 0;
         }
         return prevTime - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [quizStarted, currentQuestionIndex, quiz, quizCompleted, showResult, calculateScore]);
+  }, [quizStarted, currentQuestionIndex, quiz, quizCompleted, showResult, timerPaused]);
 
   const startQuiz = () => {
     setQuizStarted(true);
@@ -91,16 +92,28 @@ const PlayQuiz = () => {
   };
 
   const handleAnswerSelected = (answerId: string) => {
+    const currentQuestion = quiz!.questions[currentQuestionIndex];
+    
+    // Update selected answers
     setSelectedAnswers(prev => ({
       ...prev,
-      [quiz!.questions[currentQuestionIndex].id]: answerId,
+      [currentQuestion.id]: answerId,
     }));
+    
+    // Unpause timer if it was paused due to time running out
+    if (timerPaused) {
+      setTimerPaused(false);
+    }
+    
+    // Reset time warning
+    setTimeWarning(false);
   };
 
   const nextQuestion = () => {
     if (currentQuestionIndex < quiz!.questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
-      // Update timeLeft in a separate effect that responds to currentQuestionIndex changes
+      setTimerPaused(false);
+      setTimeWarning(false);
     } else {
       const { totalScore } = calculateScore();
       setScore(totalScore);
@@ -113,7 +126,8 @@ const PlayQuiz = () => {
   const prevQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
-      // Update timeLeft in a separate effect that responds to currentQuestionIndex changes
+      setTimerPaused(false);
+      setTimeWarning(false);
     }
   };
 
@@ -242,7 +256,17 @@ const PlayQuiz = () => {
             <Button variant="outline" className="flex-grow" onClick={() => navigate('/')}>
               Back to Home
             </Button>
-            <Button className="flex-grow" onClick={() => navigate(`/play/${quiz.id}`)}>
+            <Button className="flex-grow" onClick={() => {
+              // Reset the quiz state but keep the same quiz
+              setCurrentQuestionIndex(0);
+              setSelectedAnswers({});
+              setShowResult(false);
+              setQuizCompleted(false);
+              setTimeLeft(quiz.questions[0]?.timeLimit || 30);
+              setTimerPaused(false);
+              setTimeWarning(false);
+              toast.success("Let's try this quiz again!");
+            }}>
               Play Again
             </Button>
           </div>
@@ -253,6 +277,7 @@ const PlayQuiz = () => {
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
+  const hasAnswered = Boolean(selectedAnswers[currentQuestion.id]);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -263,9 +288,14 @@ const PlayQuiz = () => {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            <span className={timeLeft < 5 ? "text-quiz-red font-bold animate-ping-once" : ""}>
+            <span className={`${timeWarning || timeLeft < 5 ? "text-quiz-red font-bold animate-ping-once" : ""}`}>
               {timeLeft}s
             </span>
+            {timerPaused && (
+              <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full flex items-center">
+                <AlertCircle className="h-3 w-3 mr-1" /> Time's up
+              </span>
+            )}
           </div>
         </div>
         <Progress value={progress} className="h-2" />
@@ -287,15 +317,28 @@ const PlayQuiz = () => {
         >
           <ArrowLeft className="h-4 w-4" /> Previous
         </Button>
-        <Button onClick={nextQuestion} className="gap-2">
-          {currentQuestionIndex < quiz.questions.length - 1 ? (
-            <>
-              Next <ArrowRight className="h-4 w-4" />
-            </>
-          ) : (
-            "Finish Quiz"
-          )}
-        </Button>
+        
+        {hasAnswered || timerPaused ? (
+          <Button onClick={nextQuestion} className="gap-2">
+            {currentQuestionIndex < quiz.questions.length - 1 ? (
+              <>
+                Next <ArrowRight className="h-4 w-4" />
+              </>
+            ) : (
+              "Finish Quiz"
+            )}
+          </Button>
+        ) : (
+          <Button onClick={nextQuestion} variant="outline" className="gap-2">
+            {currentQuestionIndex < quiz.questions.length - 1 ? (
+              <>
+                Skip <ArrowRight className="h-4 w-4" />
+              </>
+            ) : (
+              "Finish Quiz"
+            )}
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Question, Answer } from "@/types/quiz";
-import { CheckCircle2, XCircle, Info } from "lucide-react";
+import { CheckCircle2, XCircle, Info, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface QuestionCardProps {
@@ -23,6 +23,14 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
 }) => {
   const [fillBlankAnswer, setFillBlankAnswer] = useState("");
   const [showExplanation, setShowExplanation] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reset fill blank answer when question changes
+  useEffect(() => {
+    setFillBlankAnswer("");
+    setIsSubmitting(false);
+    setShowExplanation(false);
+  }, [question.id]);
 
   const handleChange = (value: string) => {
     onAnswerSelected(value);
@@ -30,7 +38,10 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
 
   const handleFillBlankSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAnswerSelected(fillBlankAnswer);
+    if (fillBlankAnswer.trim()) {
+      setIsSubmitting(true);
+      onAnswerSelected(fillBlankAnswer);
+    }
   };
 
   const renderQuestionByType = () => {
@@ -45,7 +56,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.answers.map((answer) => (
               <div
                 key={answer.id}
-                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent ${
+                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent transition-colors ${
                   showCorrectAnswer && answer.isCorrect
                     ? "bg-green-50 border-green-300"
                     : showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect
@@ -79,7 +90,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.answers.map((answer) => (
               <div
                 key={answer.id}
-                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent ${
+                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent transition-colors ${
                   showCorrectAnswer && answer.isCorrect
                     ? "bg-green-50 border-green-300"
                     : showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect
@@ -112,9 +123,10 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               value={fillBlankAnswer}
               onChange={(e) => setFillBlankAnswer(e.target.value)}
               className="w-full"
-              disabled={showCorrectAnswer}
+              disabled={showCorrectAnswer || isSubmitting}
+              autoFocus
             />
-            {!showCorrectAnswer && (
+            {!showCorrectAnswer && !isSubmitting && (
               <Button 
                 type="submit" 
                 className="w-full mt-2"
@@ -123,6 +135,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                 Submit Answer
               </Button>
             )}
+            {isSubmitting && !showCorrectAnswer && (
+              <div className="p-3 rounded-lg bg-blue-50 border border-blue-300 mt-3">
+                <p className="font-medium">Your answer: <span className="text-blue-700">{selectedAnswerId}</span></p>
+              </div>
+            )}
             {showCorrectAnswer && (
               <div className="p-3 rounded-lg bg-green-50 border border-green-300 mt-3">
                 <p className="font-medium flex items-center">
@@ -130,6 +147,16 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                   Correct answer:
                 </p>
                 <p className="text-green-700 mt-1">{question.answers[0]?.text}</p>
+                
+                {selectedAnswerId && selectedAnswerId.toLowerCase() !== question.answers[0]?.text.toLowerCase() && (
+                  <div className="mt-2 p-2 bg-red-50 rounded">
+                    <p className="font-medium flex items-center">
+                      <XCircle className="h-4 w-4 mr-2 text-red-600" />
+                      Your answer:
+                    </p>
+                    <p className="text-red-700">{selectedAnswerId}</p>
+                  </div>
+                )}
               </div>
             )}
           </form>
@@ -174,6 +201,15 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               <p className="text-gray-700">{question.explanation}</p>
             </div>
           )}
+        </div>
+      )}
+
+      {(question.type === "fill-blank" && selectedAnswerId && !showCorrectAnswer) && (
+        <div className="mt-4 flex justify-center">
+          <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs flex items-center">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            Answer submitted
+          </div>
         </div>
       )}
     </Card>
