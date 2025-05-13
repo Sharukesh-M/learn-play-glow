@@ -1,4 +1,3 @@
-
 import { Quiz, QuestionType, Question, LeaderboardEntry } from "../types/quiz";
 
 // Updated categories to include entrance exam subjects
@@ -724,7 +723,7 @@ const generateQuestionsFromSubject = (subject: string): Question[] => {
   });
 };
 
-// Example of generating quizzes for each subject
+// Generate subject quizzes
 export const generateSubjectQuizzes = (): Quiz[] => {
   return Object.keys(SUBJECT_QUESTIONS).map((subject) => {
     const questions = generateQuestionsFromSubject(subject);
@@ -746,7 +745,17 @@ export const generateSubjectQuizzes = (): Quiz[] => {
   });
 };
 
-// Generate some sample quizzes
+// Generate sample quizzes - renaming to what the imports expect
+export const generateMockQuizzes = (): Quiz[] => {
+  return generateSubjectQuizzes();
+};
+
+// Generate sample leaderboard - adding this function to match imports
+export const generateMockLeaderboard = (): LeaderboardEntry[] => {
+  return SAMPLE_LEADERBOARD;
+};
+
+// Sample quizzes
 export const SAMPLE_QUIZZES: Quiz[] = generateSubjectQuizzes();
 
 // Generate sample leaderboard entries

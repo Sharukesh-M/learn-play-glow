@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,7 @@ const CreateQuiz = () => {
   });
 
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
-    type: "multiple-choice",
+    type: QuestionType.MULTIPLE_CHOICE,
     text: "",
     points: 100,
     timeLimit: 30,
@@ -92,12 +91,12 @@ const CreateQuiz = () => {
   const handleQuestionTypeChange = (type: QuestionType) => {
     let answers;
     
-    if (type === "true-false") {
+    if (type === QuestionType.TRUE_FALSE) {
       answers = [
         { id: "a", text: "True", isCorrect: true },
         { id: "b", text: "False", isCorrect: false },
       ];
-    } else if (type === "fill-blank") {
+    } else if (type === QuestionType.FILL_BLANK) {
       answers = [{ id: "a", text: "", isCorrect: true }];
     } else {
       // multiple-choice
@@ -168,7 +167,7 @@ const CreateQuiz = () => {
 
     // Reset current question
     setCurrentQuestion({
-      type: "multiple-choice",
+      type: QuestionType.MULTIPLE_CHOICE,
       text: "",
       points: 100,
       timeLimit: 30,
@@ -411,18 +410,16 @@ const CreateQuiz = () => {
               <div className="space-y-2">
                 <Label>Question Type</Label>
                 <div className="flex flex-wrap gap-2">
-                  {(["multiple-choice", "true-false", "fill-blank"] as QuestionType[]).map(
-                    (type) => (
-                      <Button
-                        key={type}
-                        variant={currentQuestion.type === type ? "default" : "outline"}
-                        onClick={() => handleQuestionTypeChange(type)}
-                        className="flex-grow"
-                      >
-                        {type.replace("-", " ")}
-                      </Button>
-                    )
-                  )}
+                  {Object.values(QuestionType).map((type) => (
+                    <Button
+                      key={type}
+                      variant={currentQuestion.type === type ? "default" : "outline"}
+                      onClick={() => handleQuestionTypeChange(type)}
+                      className="flex-grow"
+                    >
+                      {type.replace("-", " ")}
+                    </Button>
+                  ))}
                 </div>
               </div>
 
