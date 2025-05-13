@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -49,12 +50,15 @@ const PlayQuiz = () => {
       navigate('/');
     } else if (!quizStarted) {
       // Initialize the timer when starting quiz
-      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || configTimePerQuestion);
+      const initialQuestion = quiz.questions[currentQuestionIndex];
+      if (initialQuestion) {
+        setTimeLeft(initialQuestion.timeLimit || configTimePerQuestion);
+      }
     }
   }, [quiz, navigate, quizStarted, currentQuestionIndex, configTimePerQuestion]);
 
   // Apply quiz configuration
-  const applyQuizConfig = () => {
+  const applyQuizConfig = useCallback(() => {
     if (!quiz) return;
     
     let filteredQuestions = [...quiz.questions];
@@ -83,13 +87,17 @@ const PlayQuiz = () => {
     }));
     
     // Create a new quiz with the filtered questions
-    const configuredQuiz: Quiz = {
-      ...quiz,
-      questions: filteredQuestions
-    };
-    
-    setQuiz(configuredQuiz);
-  };
+    if (filteredQuestions.length > 0) {
+      const configuredQuiz: Quiz = {
+        ...quiz,
+        questions: filteredQuestions
+      };
+      
+      setQuiz(configuredQuiz);
+    } else {
+      toast.error("No questions match your filters. Using all questions instead.");
+    }
+  }, [quiz, configQuestionCount, configQuestionTypes, configDifficulty, configTimePerQuestion]);
 
   // Calculate score function moved outside of render to prevent unnecessary recalculations
   const calculateScore = useCallback(() => {
@@ -153,6 +161,7 @@ const PlayQuiz = () => {
     if (!quiz) return;
     
     const currentQuestion = quiz.questions[currentQuestionIndex];
+    if (!currentQuestion) return;
     
     // Update selected answers
     setSelectedAnswers(prev => ({
@@ -170,7 +179,7 @@ const PlayQuiz = () => {
   };
 
   const nextQuestion = () => {
-    if (!quiz) return;
+    if (!quiz || quiz.questions.length === 0) return;
     
     if (currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
@@ -196,11 +205,26 @@ const PlayQuiz = () => {
   // Effect to update the timer whenever currentQuestionIndex changes
   useEffect(() => {
     if (quiz && quizStarted && !quizCompleted && !showResult) {
-      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || configTimePerQuestion);
+      const currentQuestion = quiz.questions[currentQuestionIndex];
+      if (currentQuestion) {
+        setTimeLeft(currentQuestion.timeLimit || configTimePerQuestion);
+      }
     }
   }, [currentQuestionIndex, quiz, quizStarted, quizCompleted, showResult, configTimePerQuestion]);
 
   if (!quiz) return null;
+
+  // Check if quiz has no questions after filtering
+  if (quiz.questions.length === 0 && quizStarted) {
+    toast.error("This quiz has no questions matching your criteria!");
+    return (
+      <div className="max-w-lg mx-auto text-center py-12">
+        <h2 className="text-2xl font-bold mb-4">No Questions Available</h2>
+        <p className="mb-6">There are no questions available for this quiz with your selected filters.</p>
+        <Button onClick={() => navigate('/')}>Return Home</Button>
+      </div>
+    );
+  }
 
   // Prepare data for the performance chart
   const prepareChartData = () => {
@@ -211,7 +235,7 @@ const PlayQuiz = () => {
     quiz.questions.forEach(question => {
       const type = question.type;
       const selectedAnswer = selectedAnswers[question.id];
-      const isCorrect = question.answers.some(a => a.id === selectedAnswer && a.isCorrect);
+      const isCorrect = selectedAnswer && question.answers.some(a => a.id === selectedAnswer && a.isCorrect);
       
       if (!questionTypes[type]) {
         questionTypes[type] = { correct: 0, incorrect: 0, total: 0 };
@@ -481,7 +505,9 @@ const PlayQuiz = () => {
               setSelectedAnswers({});
               setShowResult(false);
               setQuizCompleted(false);
-              setTimeLeft(quiz.questions[0]?.timeLimit || configTimePerQuestion);
+              if (quiz.questions.length > 0) {
+                setTimeLeft(quiz.questions[0]?.timeLimit || configTimePerQuestion);
+              }
               setTimerPaused(false);
               setTimeWarning(false);
               toast.success("Let's try this quiz again!");
@@ -494,7 +520,26 @@ const PlayQuiz = () => {
     );
   }
 
+  // Safety check - make sure we have questions
+  if (quiz.questions.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold mb-4">No Questions Available</h2>
+        <Button onClick={() => navigate('/')}>Return Home</Button>
+      </div>
+    );
+  }
+  
   const currentQuestion = quiz.questions[currentQuestionIndex];
+  
+  // Additional safety check
+  if (!currentQuestion) {
+    if (currentQuestionIndex >= quiz.questions.length) {
+      setCurrentQuestionIndex(0);
+    }
+    return null;
+  }
+  
   const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
   const hasAnswered = Boolean(selectedAnswers[currentQuestion.id]);
 
