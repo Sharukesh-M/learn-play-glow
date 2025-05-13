@@ -1,3 +1,4 @@
+
 import { Quiz, QuestionType, Question, LeaderboardEntry } from "../types/quiz";
 
 // Updated categories to include entrance exam subjects
@@ -657,3 +658,167 @@ const SUBJECT_QUESTIONS = {
     },
     {
       question: "Who is the founder of Microsoft?",
+      options: [
+        "Steve Jobs",
+        "Bill Gates",
+        "Mark Zuckerberg",
+        "Jeff Bezos"
+      ],
+      correctOption: 1,
+      explanation: "Bill Gates, along with Paul Allen, founded Microsoft in 1975. Under Gates' leadership, Microsoft became the world's largest personal computer software company. He served as CEO until 2000 and remained chairman until 2014."
+    },
+    {
+      question: "Which element has the chemical symbol 'O'?",
+      options: [
+        "Gold",
+        "Oxygen",
+        "Osmium",
+        "Oganesson"
+      ],
+      correctOption: 1,
+      explanation: "Oxygen has the chemical symbol 'O'. It's the third most abundant element in the universe by mass and makes up about 21% of the Earth's atmosphere."
+    },
+    {
+      question: "What is the national animal of India?",
+      options: [
+        "Lion",
+        "Tiger",
+        "Elephant",
+        "Peacock"
+      ],
+      correctOption: 1,
+      explanation: "The Bengal Tiger (Panthera tigris tigris) is the national animal of India. It symbolizes power, strength, elegance, and national pride."
+    },
+    {
+      question: "Which planet is known as the Red Planet?",
+      options: [
+        "Venus",
+        "Mars",
+        "Jupiter",
+        "Saturn"
+      ],
+      correctOption: 1,
+      explanation: "Mars is known as the Red Planet due to the reddish appearance given to its surface by iron oxide (rust) prevalent there."
+    }
+  ]
+};
+
+// Create a function to generate questions in the proper format for the Quiz interface
+const generateQuestionsFromSubject = (subject: string): Question[] => {
+  const questionsData = SUBJECT_QUESTIONS[subject as keyof typeof SUBJECT_QUESTIONS] || [];
+  
+  return questionsData.map((q: any, index: number) => {
+    return {
+      id: `${subject.toLowerCase().replace(/\s/g, '-')}-q-${index + 1}`,
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: q.question,
+      points: 10,
+      timeLimit: 60,
+      answers: q.options.map((opt: string, i: number) => ({
+        id: `answer-${i + 1}`,
+        text: opt,
+        isCorrect: i === q.correctOption
+      })),
+      explanation: q.explanation
+    };
+  });
+};
+
+// Example of generating quizzes for each subject
+export const generateSubjectQuizzes = (): Quiz[] => {
+  return Object.keys(SUBJECT_QUESTIONS).map((subject) => {
+    const questions = generateQuestionsFromSubject(subject);
+    return {
+      id: `${subject.toLowerCase().replace(/\s/g, '-')}-quiz`,
+      title: `${subject} Knowledge Test`,
+      description: `Test your knowledge of ${subject} concepts and principles.`,
+      category: subject,
+      difficulty: 'medium',
+      createdBy: 'system',
+      createdAt: new Date().toISOString(),
+      timesPlayed: Math.floor(Math.random() * 1000),
+      averageScore: Math.floor(Math.random() * 80) + 20,
+      tags: [subject, 'Knowledge', 'Test'],
+      questions: questions,
+      isPublic: true,
+      thumbnailColor: '#' + Math.floor(Math.random()*16777215).toString(16)
+    };
+  });
+};
+
+// Generate some sample quizzes
+export const SAMPLE_QUIZZES: Quiz[] = generateSubjectQuizzes();
+
+// Generate sample leaderboard entries
+export const SAMPLE_LEADERBOARD: LeaderboardEntry[] = [
+  {
+    userId: "user1",
+    username: "QuizMaster",
+    score: 980,
+    position: 1,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user2",
+    username: "BrainiacQueen",
+    score: 940,
+    position: 2,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user3",
+    username: "KnowledgeKing",
+    score: 890,
+    position: 3,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user4",
+    username: "QuizWizard",
+    score: 870,
+    position: 4,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user5",
+    username: "BrainBox",
+    score: 850,
+    position: 5,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user6",
+    username: "GeniusJones",
+    score: 820,
+    position: 6,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user7",
+    username: "TriviaChamp",
+    score: 800,
+    position: 7,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user8",
+    username: "MindMaster",
+    score: 780,
+    position: 8,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user9",
+    username: "QuestionPro",
+    score: 760,
+    position: 9,
+    completedAt: new Date().toISOString()
+  },
+  {
+    userId: "user10",
+    username: "KnowItAll",
+    score: 750,
+    position: 10,
+    completedAt: new Date().toISOString()
+  }
+];
