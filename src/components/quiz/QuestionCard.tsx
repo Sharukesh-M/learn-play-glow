@@ -5,7 +5,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Question, Answer } from "@/types/quiz";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface QuestionCardProps {
   question: Question;
@@ -21,6 +22,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   selectedAnswerId = "",
 }) => {
   const [fillBlankAnswer, setFillBlankAnswer] = useState("");
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const handleChange = (value: string) => {
     onAnswerSelected(value);
@@ -43,13 +45,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.answers.map((answer) => (
               <div
                 key={answer.id}
-                className={`answer-option ${
+                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent ${
                   showCorrectAnswer && answer.isCorrect
-                    ? "correct"
+                    ? "bg-green-50 border-green-300"
                     : showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect
-                    ? "incorrect"
+                    ? "bg-red-50 border-red-300"
                     : selectedAnswerId === answer.id
-                    ? "selected"
+                    ? "bg-blue-50 border-blue-300"
                     : ""
                 }`}
               >
@@ -59,8 +61,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                   className="flex-grow cursor-pointer flex items-center justify-between"
                 >
                   <span>{answer.text}</span>
-                  {showCorrectAnswer && answer.isCorrect && <CheckCircle2 className="h-5 w-5 text-quiz-green" />}
-                  {showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect && <XCircle className="h-5 w-5 text-quiz-red" />}
+                  {showCorrectAnswer && answer.isCorrect && <CheckCircle2 className="h-5 w-5 text-green-600" />}
+                  {showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
                 </Label>
               </div>
             ))}
@@ -77,13 +79,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.answers.map((answer) => (
               <div
                 key={answer.id}
-                className={`answer-option ${
+                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent ${
                   showCorrectAnswer && answer.isCorrect
-                    ? "correct"
+                    ? "bg-green-50 border-green-300"
                     : showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect
-                    ? "incorrect"
+                    ? "bg-red-50 border-red-300"
                     : selectedAnswerId === answer.id
-                    ? "selected"
+                    ? "bg-blue-50 border-blue-300"
                     : ""
                 }`}
               >
@@ -93,8 +95,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                   className="flex-grow cursor-pointer flex items-center justify-between"
                 >
                   <span>{answer.text}</span>
-                  {showCorrectAnswer && answer.isCorrect && <CheckCircle2 className="h-5 w-5 text-quiz-green" />}
-                  {showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect && <XCircle className="h-5 w-5 text-quiz-red" />}
+                  {showCorrectAnswer && answer.isCorrect && <CheckCircle2 className="h-5 w-5 text-green-600" />}
+                  {showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
                 </Label>
               </div>
             ))}
@@ -112,10 +114,22 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               className="w-full"
               disabled={showCorrectAnswer}
             />
+            {!showCorrectAnswer && (
+              <Button 
+                type="submit" 
+                className="w-full mt-2"
+                disabled={!fillBlankAnswer.trim()}
+              >
+                Submit Answer
+              </Button>
+            )}
             {showCorrectAnswer && (
-              <div className="text-sm font-medium">
-                <span className="mr-2">Correct answer:</span>
-                <span className="text-quiz-green">{question.answers[0]?.text}</span>
+              <div className="p-3 rounded-lg bg-green-50 border border-green-300 mt-3">
+                <p className="font-medium flex items-center">
+                  <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
+                  Correct answer:
+                </p>
+                <p className="text-green-700 mt-1">{question.answers[0]?.text}</p>
               </div>
             )}
           </form>
@@ -130,8 +144,12 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
     <Card className="rounded-xl p-6 shadow-md bg-white">
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">
-          <div className="badge badge-purple">{question.type.replace('-', ' ')}</div>
-          <div className="badge badge-blue">{question.points} pts</div>
+          <div className="bg-purple-100 text-purple-800 px-2 py-1 rounded-md text-xs font-medium">
+            {question.type.replace('-', ' ')}
+          </div>
+          <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-medium">
+            {question.points} pts
+          </div>
         </div>
         <h3 className="text-xl font-semibold mb-2">{question.text}</h3>
         {question.image && <img src={question.image} alt="Question" className="mb-4 rounded-lg max-w-full h-auto" />}
@@ -140,9 +158,22 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
       {renderQuestionByType()}
 
       {showCorrectAnswer && question.explanation && (
-        <div className="mt-6 p-4 rounded-lg bg-muted/50 text-sm">
-          <p className="font-semibold mb-1">Explanation:</p>
-          <p>{question.explanation}</p>
+        <div className="mt-6">
+          <Button 
+            variant="outline" 
+            className="flex items-center text-sm w-full justify-center"
+            onClick={() => setShowExplanation(!showExplanation)}
+          >
+            <Info className="h-4 w-4 mr-2" />
+            {showExplanation ? "Hide Explanation" : "Show Explanation"}
+          </Button>
+          
+          {showExplanation && (
+            <div className="mt-3 p-4 rounded-lg bg-amber-50 border border-amber-200 text-sm">
+              <p className="font-semibold mb-1">Explanation:</p>
+              <p className="text-gray-700">{question.explanation}</p>
+            </div>
+          )}
         </div>
       )}
     </Card>
