@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -56,7 +55,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.answers.map((answer) => (
               <div
                 key={answer.id}
-                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent transition-colors ${
+                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent transition-colors cursor-pointer ${
                   showCorrectAnswer && answer.isCorrect
                     ? "bg-green-50 border-green-300"
                     : showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect
@@ -65,6 +64,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                     ? "bg-blue-50 border-blue-300"
                     : ""
                 }`}
+                onClick={() => handleChange(answer.id)}
               >
                 <RadioGroupItem value={answer.id} id={answer.id} className="peer sr-only" />
                 <Label
@@ -90,7 +90,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {question.answers.map((answer) => (
               <div
                 key={answer.id}
-                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent transition-colors ${
+                className={`answer-option rounded-lg p-3 border border-input hover:bg-accent transition-colors cursor-pointer ${
                   showCorrectAnswer && answer.isCorrect
                     ? "bg-green-50 border-green-300"
                     : showCorrectAnswer && selectedAnswerId === answer.id && !answer.isCorrect
@@ -99,6 +99,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                     ? "bg-blue-50 border-blue-300"
                     : ""
                 }`}
+                onClick={() => handleChange(answer.id)}
               >
                 <RadioGroupItem value={answer.id} id={answer.id} className="peer sr-only" />
                 <Label

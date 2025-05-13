@@ -1,17 +1,27 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Clock, Trophy, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Trophy, AlertCircle, ChartBar, CircleCheck, CircleX } from "lucide-react";
 import QuestionCard from "@/components/quiz/QuestionCard";
 import { generateMockQuizzes } from "@/utils/mockData";
+import { Quiz, QuestionType } from "@/types/quiz";
+import { Slider } from "@/components/ui/slider";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ResponsiveBar } from "recharts";
 
 const PlayQuiz = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
   const quizzes = generateMockQuizzes();
-  const quiz = quizzes.find((q) => q.id === quizId);
+  const [quiz, setQuiz] = useState<Quiz | undefined>(quizzes.find((q) => q.id === quizId));
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
@@ -23,6 +33,16 @@ const PlayQuiz = () => {
   const [timeWarning, setTimeWarning] = useState(false);
   const [timerPaused, setTimerPaused] = useState(false);
   
+  // Configuration options before quiz starts
+  const [configQuestionCount, setConfigQuestionCount] = useState<number | null>(null);
+  const [configQuestionTypes, setConfigQuestionTypes] = useState<Record<QuestionType, boolean>>({
+    "multiple-choice": true,
+    "true-false": true,
+    "fill-blank": true
+  });
+  const [configDifficulty, setConfigDifficulty] = useState("all"); // "all", "easy", "medium", "hard"
+  const [configTimePerQuestion, setConfigTimePerQuestion] = useState(30); // in seconds
+  
   // If no quiz found, redirect to home page
   useEffect(() => {
     if (!quiz) {
@@ -30,9 +50,47 @@ const PlayQuiz = () => {
       navigate('/');
     } else if (!quizStarted) {
       // Initialize the timer when starting quiz
-      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || 30);
+      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || configTimePerQuestion);
     }
-  }, [quiz, navigate, quizStarted, currentQuestionIndex]);
+  }, [quiz, navigate, quizStarted, currentQuestionIndex, configTimePerQuestion]);
+
+  // Apply quiz configuration
+  const applyQuizConfig = () => {
+    if (!quiz) return;
+    
+    let filteredQuestions = [...quiz.questions];
+    
+    // Filter by question type
+    filteredQuestions = filteredQuestions.filter(q => 
+      configQuestionTypes[q.type as QuestionType]
+    );
+    
+    // Filter by difficulty if not "all"
+    if (configDifficulty !== "all") {
+      filteredQuestions = filteredQuestions.filter(q => 
+        quiz.difficulty === configDifficulty
+      );
+    }
+    
+    // Limit by question count if set
+    if (configQuestionCount && configQuestionCount > 0 && configQuestionCount < filteredQuestions.length) {
+      filteredQuestions = filteredQuestions.slice(0, configQuestionCount);
+    }
+    
+    // Apply custom time limit per question
+    filteredQuestions = filteredQuestions.map(q => ({
+      ...q,
+      timeLimit: configTimePerQuestion
+    }));
+    
+    // Create a new quiz with the filtered questions
+    const configuredQuiz: Quiz = {
+      ...quiz,
+      questions: filteredQuestions
+    };
+    
+    setQuiz(configuredQuiz);
+  };
 
   // Calculate score function moved outside of render to prevent unnecessary recalculations
   const calculateScore = useCallback(() => {
@@ -87,12 +145,15 @@ const PlayQuiz = () => {
   }, [quizStarted, currentQuestionIndex, quiz, quizCompleted, showResult, timerPaused]);
 
   const startQuiz = () => {
+    applyQuizConfig();
     setQuizStarted(true);
     toast.success("Quiz started! Good luck!");
   };
 
   const handleAnswerSelected = (answerId: string) => {
-    const currentQuestion = quiz!.questions[currentQuestionIndex];
+    if (!quiz) return;
+    
+    const currentQuestion = quiz.questions[currentQuestionIndex];
     
     // Update selected answers
     setSelectedAnswers(prev => ({
@@ -110,7 +171,9 @@ const PlayQuiz = () => {
   };
 
   const nextQuestion = () => {
-    if (currentQuestionIndex < quiz!.questions.length - 1) {
+    if (!quiz) return;
+    
+    if (currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setTimerPaused(false);
       setTimeWarning(false);
@@ -134,21 +197,54 @@ const PlayQuiz = () => {
   // Effect to update the timer whenever currentQuestionIndex changes
   useEffect(() => {
     if (quiz && quizStarted && !quizCompleted && !showResult) {
-      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || 30);
+      setTimeLeft(quiz.questions[currentQuestionIndex]?.timeLimit || configTimePerQuestion);
     }
-  }, [currentQuestionIndex, quiz, quizStarted, quizCompleted, showResult]);
+  }, [currentQuestionIndex, quiz, quizStarted, quizCompleted, showResult, configTimePerQuestion]);
 
   if (!quiz) return null;
+
+  // Prepare data for the performance chart
+  const prepareChartData = () => {
+    if (!quiz) return [];
+    
+    const questionTypes: Record<string, { correct: number, incorrect: number, total: number }> = {};
+    
+    quiz.questions.forEach(question => {
+      const type = question.type;
+      const selectedAnswer = selectedAnswers[question.id];
+      const isCorrect = question.answers.some(a => a.id === selectedAnswer && a.isCorrect);
+      
+      if (!questionTypes[type]) {
+        questionTypes[type] = { correct: 0, incorrect: 0, total: 0 };
+      }
+      
+      if (selectedAnswer) {
+        questionTypes[type].total += 1;
+        if (isCorrect) {
+          questionTypes[type].correct += 1;
+        } else {
+          questionTypes[type].incorrect += 1;
+        }
+      }
+    });
+    
+    return Object.entries(questionTypes).map(([type, data]) => ({
+      name: type.replace('-', ' '),
+      correct: data.correct,
+      incorrect: data.incorrect,
+      percentage: data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0
+    }));
+  };
 
   if (!quizStarted) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="quiz-card text-center p-8">
+        <Card className="p-8">
           <div className={`h-24 w-24 rounded-full bg-gradient-to-br ${quiz.thumbnailColor} flex items-center justify-center mx-auto mb-6`}>
             <h2 className="text-white text-3xl font-bold">{quiz.title.charAt(0)}</h2>
           </div>
-          <h1 className="text-2xl font-bold mb-4">{quiz.title}</h1>
-          <p className="text-muted-foreground mb-6">{quiz.description}</p>
+          <h1 className="text-2xl font-bold mb-4 text-center">{quiz.title}</h1>
+          <p className="text-muted-foreground mb-6 text-center">{quiz.description}</p>
           
           <div className="grid grid-cols-2 gap-4 mb-8 text-sm">
             <div className="rounded-lg bg-muted p-4 flex flex-col items-center">
@@ -173,10 +269,97 @@ const PlayQuiz = () => {
             </div>
           </div>
           
+          <div className="space-y-6 mb-8">
+            <h3 className="text-lg font-semibold">Quiz Configuration</h3>
+            
+            <div>
+              <Label htmlFor="questionCount" className="mb-2 block">Number of Questions</Label>
+              <Slider
+                id="questionCount" 
+                min={1}
+                max={quiz.questions.length}
+                step={1}
+                value={[configQuestionCount || quiz.questions.length]}
+                onValueChange={(values) => setConfigQuestionCount(values[0])}
+                className="mb-2"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>1</span>
+                <span>{configQuestionCount || quiz.questions.length}/{quiz.questions.length}</span>
+              </div>
+            </div>
+            
+            <div>
+              <Label className="mb-2 block">Question Types</Label>
+              <div className="space-y-2">
+                {Object.keys(configQuestionTypes).map((type) => (
+                  <div key={type} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`type-${type}`}
+                      checked={configQuestionTypes[type as QuestionType]}
+                      onCheckedChange={(checked) => 
+                        setConfigQuestionTypes(prev => ({
+                          ...prev,
+                          [type]: !!checked
+                        }))
+                      }
+                    />
+                    <Label htmlFor={`type-${type}`} className="capitalize">{type.replace('-', ' ')}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="difficulty" className="mb-2 block">Difficulty</Label>
+              <RadioGroup
+                id="difficulty"
+                value={configDifficulty}
+                onValueChange={setConfigDifficulty}
+                className="space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="all" id="all" />
+                  <Label htmlFor="all">All Difficulties</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="easy" id="easy" />
+                  <Label htmlFor="easy">Easy</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="medium" id="medium" />
+                  <Label htmlFor="medium">Medium</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="hard" id="hard" />
+                  <Label htmlFor="hard">Hard</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            
+            <div>
+              <Label htmlFor="timePerQuestion" className="mb-2 block">Time per Question (seconds)</Label>
+              <Slider
+                id="timePerQuestion" 
+                min={10}
+                max={120}
+                step={5}
+                value={[configTimePerQuestion]}
+                onValueChange={(values) => setConfigTimePerQuestion(values[0])}
+                className="mb-2"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>10s</span>
+                <span>{configTimePerQuestion}s</span>
+                <span>120s</span>
+              </div>
+            </div>
+          </div>
+          
           <Button onClick={startQuiz} size="lg" className="w-full">
             Start Quiz
           </Button>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -184,10 +367,11 @@ const PlayQuiz = () => {
   if (showResult) {
     const { totalScore, correctAnswers } = calculateScore();
     const percentage = Math.round((correctAnswers / quiz.questions.length) * 100);
+    const chartData = prepareChartData();
     
     return (
       <div className="max-w-2xl mx-auto animate-fade-in">
-        <div className="quiz-card text-center p-8">
+        <Card className="p-8">
           <div className="mb-8 relative">
             <div className="w-32 h-32 mx-auto rounded-full gradient-bg flex items-center justify-center">
               <Trophy className="h-16 w-16 text-white" />
@@ -199,7 +383,7 @@ const PlayQuiz = () => {
             </div>
           </div>
           
-          <h2 className="text-2xl font-bold mb-6">Quiz Completed!</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">Quiz Completed!</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="rounded-lg bg-muted p-4 flex flex-col items-center">
@@ -211,6 +395,61 @@ const PlayQuiz = () => {
               <span className="text-2xl font-semibold">{correctAnswers} / {quiz.questions.length}</span>
             </div>
           </div>
+
+          {chartData.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold mb-4">Performance by Question Type</h3>
+              <div className="h-64 bg-muted rounded-lg p-4">
+                <ChartContainer
+                  className="h-full w-full"
+                  config={{
+                    correct: { 
+                      color: "#22c55e",
+                      label: "Correct" 
+                    },
+                    incorrect: {
+                      color: "#ef4444",
+                      label: "Incorrect"
+                    }
+                  }}
+                >
+                  <ResponsiveBar
+                    data={chartData}
+                    keys={["correct", "incorrect"]}
+                    indexBy="name"
+                    margin={{ top: 20, right: 30, bottom: 50, left: 60 }}
+                    padding={0.3}
+                    colors={["var(--color-correct)", "var(--color-incorrect)"]}
+                    axisBottom={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                    }}
+                    axisLeft={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                    }}
+                    labelSkipWidth={12}
+                    labelSkipHeight={12}
+                    legends={[
+                      {
+                        dataFrom: "keys",
+                        anchor: "bottom",
+                        direction: "row",
+                        justify: false,
+                        translateX: 0,
+                        translateY: 50,
+                        itemsSpacing: 2,
+                        itemWidth: 100,
+                        itemHeight: 20,
+                      },
+                    ]}
+                  />
+                </ChartContainer>
+              </div>
+            </div>
+          )}
           
           <h3 className="text-lg font-semibold mb-4">Review Questions</h3>
           
@@ -262,7 +501,7 @@ const PlayQuiz = () => {
               setSelectedAnswers({});
               setShowResult(false);
               setQuizCompleted(false);
-              setTimeLeft(quiz.questions[0]?.timeLimit || 30);
+              setTimeLeft(quiz.questions[0]?.timeLimit || configTimePerQuestion);
               setTimerPaused(false);
               setTimeWarning(false);
               toast.success("Let's try this quiz again!");
@@ -270,7 +509,7 @@ const PlayQuiz = () => {
               Play Again
             </Button>
           </div>
-        </div>
+        </Card>
       </div>
     );
   }
