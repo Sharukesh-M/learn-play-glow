@@ -1,5 +1,9 @@
 
-export type QuestionType = 'multiple-choice' | 'true-false' | 'fill-blank';
+export enum QuestionType {
+  MULTIPLE_CHOICE = 'multiple-choice',
+  TRUE_FALSE = 'true-false',
+  FILL_BLANK = 'fill-blank'
+}
 
 export interface Answer {
   id: string;
