@@ -1,16 +1,107 @@
 
 import { Quiz, QuestionType } from "../types/quiz";
 
+// Updated categories to include entrance exam subjects
 export const CATEGORIES = [
   "Science", "Math", "History", "Geography", "Language", 
-  "Technology", "Sports", "Entertainment", "Art", "Literature"
+  "Technology", "Sports", "Entertainment", "Art", "Literature",
+  "Physics", "Chemistry", "Biology", "Computer Science", "Economics",
+  "General Knowledge", "Aptitude", "Reasoning", "English", "Current Affairs"
 ];
 
+// Updated tags to include exam types
 export const TAGS = [
   "K-12", "College", "Professional", "Trivia", "Fun",
   "Science", "Math", "History", "Geography", "Language",
-  "Technology", "Sports", "Entertainment", "Art", "Literature"
+  "Technology", "Sports", "Entertainment", "Art", "Literature",
+  "UPSC", "NEET", "JEE", "CAT", "IELTS", "GATE", "GRE", "GMAT"
 ];
+
+// Updated with exam subcategories
+export const EXAM_QUESTION_BANKS = {
+  "UPSC": ["History", "Geography", "Economics", "Current Affairs", "General Knowledge"],
+  "NEET": ["Biology", "Physics", "Chemistry"],
+  "JEE": ["Physics", "Chemistry", "Math"],
+  "CAT": ["Quantitative Aptitude", "Verbal Ability", "Logical Reasoning", "Data Interpretation"],
+  "IELTS": ["Reading", "Writing", "Speaking", "Listening"],
+  "GATE": ["Computer Science", "Electronics", "Mechanical", "Civil", "Electrical"]
+};
+
+// Sample questions by subject
+const SAMPLE_QUESTIONS = {
+  "Physics": [
+    "What is Newton's First Law of Motion?",
+    "Define electric potential difference.",
+    "What is the principle of conservation of energy?",
+    "Explain Bernoulli's principle.",
+    "What is the difference between scalar and vector quantities?",
+    "How does a transformer work?",
+    "Explain the photoelectric effect.",
+    "What is the Doppler effect?",
+    "Define gravitational potential energy.",
+    "What is Faraday's law of electromagnetic induction?"
+  ],
+  "Chemistry": [
+    "What is the periodic law?",
+    "Define acid-base neutralization.",
+    "What is the difference between organic and inorganic compounds?",
+    "Explain the concept of pH.",
+    "What is the octet rule?",
+    "Define redox reactions.",
+    "What is the difference between covalent and ionic bonds?",
+    "Explain Le Chatelier's principle.",
+    "What is the Aufbau principle?",
+    "Define isomerism in organic chemistry."
+  ],
+  "Biology": [
+    "What is photosynthesis?",
+    "Explain the process of mitosis.",
+    "What is the function of DNA?",
+    "Define homeostasis.",
+    "What is natural selection?",
+    "Explain the structure of a cell membrane.",
+    "What is the difference between arteries and veins?",
+    "Define gene expression.",
+    "What is the role of enzymes in digestion?",
+    "Explain the process of cellular respiration."
+  ],
+  "Math": [
+    "What is the Pythagorean theorem?",
+    "Define integration in calculus.",
+    "What is a prime number?",
+    "Explain the concept of probability.",
+    "What is the difference between permutation and combination?",
+    "Define logarithmic functions.",
+    "What is a polynomial equation?",
+    "Explain the concept of matrices.",
+    "What is the difference between mean, median, and mode?",
+    "Define complex numbers."
+  ],
+  "History": [
+    "What were the main causes of World War I?",
+    "Who was Alexander the Great?",
+    "Explain the significance of the Industrial Revolution.",
+    "What led to the fall of the Roman Empire?",
+    "Who was Mahatma Gandhi?",
+    "Describe the French Revolution.",
+    "What was the Renaissance period?",
+    "Who were the key figures in the American Civil Rights Movement?",
+    "What was the Cold War?",
+    "Explain the significance of the Silk Road in ancient trade."
+  ],
+  "General Knowledge": [
+    "What is the capital of Australia?",
+    "Who wrote 'To Kill a Mockingbird'?",
+    "Which is the largest ocean on Earth?",
+    "What is the currency of Japan?",
+    "Who painted the Mona Lisa?",
+    "What is the tallest mountain in the world?",
+    "Who is the founder of Microsoft?",
+    "What is the chemical symbol for gold?",
+    "Which planet is known as the Red Planet?",
+    "Who was the first person to step on the Moon?"
+  ]
+};
 
 export const generateMockQuizzes = (): Quiz[] => {
   return [
@@ -25,7 +116,7 @@ export const generateMockQuizzes = (): Quiz[] => {
       timesPlayed: 1245,
       averageScore: 78,
       tags: ["Science", "K-12", "Educational"],
-      questions: generateMockQuestions("Science", 5),
+      questions: generateRandomizedQuestions("Science", 5),
       isPublic: true,
       thumbnailColor: "from-purple-500 to-indigo-500"
     },
@@ -40,7 +131,7 @@ export const generateMockQuizzes = (): Quiz[] => {
       timesPlayed: 873,
       averageScore: 65,
       tags: ["History", "Educational", "Trivia"],
-      questions: generateMockQuestions("History", 8),
+      questions: generateRandomizedQuestions("History", 8),
       isPublic: true,
       thumbnailColor: "from-amber-500 to-red-500"
     },
@@ -55,7 +146,7 @@ export const generateMockQuizzes = (): Quiz[] => {
       timesPlayed: 562,
       averageScore: 52,
       tags: ["Math", "Challenge", "Educational"],
-      questions: generateMockQuestions("Math", 10),
+      questions: generateRandomizedQuestions("Math", 10),
       isPublic: true,
       thumbnailColor: "from-blue-500 to-cyan-500"
     },
@@ -70,7 +161,7 @@ export const generateMockQuizzes = (): Quiz[] => {
       timesPlayed: 2341,
       averageScore: 81,
       tags: ["Entertainment", "Fun", "Trivia"],
-      questions: generateMockQuestions("Entertainment", 6),
+      questions: generateRandomizedQuestions("Entertainment", 6),
       isPublic: true,
       thumbnailColor: "from-pink-500 to-rose-500"
     },
@@ -85,7 +176,7 @@ export const generateMockQuizzes = (): Quiz[] => {
       timesPlayed: 945,
       averageScore: 68,
       tags: ["Geography", "Educational", "K-12"],
-      questions: generateMockQuestions("Geography", 7),
+      questions: generateRandomizedQuestions("Geography", 7),
       isPublic: true,
       thumbnailColor: "from-green-500 to-emerald-500"
     },
@@ -100,28 +191,100 @@ export const generateMockQuizzes = (): Quiz[] => {
       timesPlayed: 789,
       averageScore: 72,
       tags: ["Technology", "Professional", "Educational"],
-      questions: generateMockQuestions("Technology", 9),
+      questions: generateRandomizedQuestions("Technology", 9),
       isPublic: true,
       thumbnailColor: "from-violet-500 to-purple-500"
+    },
+    // New entrance exam quizzes
+    {
+      id: "7",
+      title: "JEE Physics Practice",
+      description: "Prepare for JEE with these physics questions",
+      category: "Physics",
+      difficulty: "hard",
+      createdBy: "JEE Coach",
+      createdAt: new Date(2023, 10, 5).toISOString(),
+      timesPlayed: 1826,
+      averageScore: 58,
+      tags: ["Physics", "JEE", "Educational"],
+      questions: generateRandomizedQuestions("Physics", 10),
+      isPublic: true,
+      thumbnailColor: "from-blue-600 to-indigo-600"
+    },
+    {
+      id: "8",
+      title: "NEET Biology Concepts",
+      description: "Essential biology concepts for NEET preparation",
+      category: "Biology",
+      difficulty: "hard",
+      createdBy: "NEET Mentor",
+      createdAt: new Date(2023, 9, 15).toISOString(),
+      timesPlayed: 1542,
+      averageScore: 62,
+      tags: ["Biology", "NEET", "Educational"],
+      questions: generateRandomizedQuestions("Biology", 10),
+      isPublic: true,
+      thumbnailColor: "from-green-600 to-teal-600"
+    },
+    {
+      id: "9",
+      title: "UPSC General Knowledge",
+      description: "Test your general knowledge for UPSC preparation",
+      category: "General Knowledge",
+      difficulty: "medium",
+      createdBy: "UPSC Explorer",
+      createdAt: new Date(2023, 11, 3).toISOString(),
+      timesPlayed: 2103,
+      averageScore: 64,
+      tags: ["General Knowledge", "UPSC", "Current Affairs"],
+      questions: generateRandomizedQuestions("General Knowledge", 10),
+      isPublic: true,
+      thumbnailColor: "from-yellow-500 to-amber-500"
+    },
+    {
+      id: "10",
+      title: "CAT Quantitative Aptitude",
+      description: "Sharpen your quantitative skills for CAT exam",
+      category: "Math",
+      difficulty: "hard",
+      createdBy: "MBA Prep",
+      createdAt: new Date(2023, 8, 22).toISOString(),
+      timesPlayed: 1320,
+      averageScore: 56,
+      tags: ["Math", "CAT", "Aptitude"],
+      questions: generateRandomizedQuestions("Math", 10),
+      isPublic: true,
+      thumbnailColor: "from-purple-600 to-pink-600"
     }
   ];
 };
 
-function generateMockQuestions(category: string, count: number) {
+function generateRandomizedQuestions(category: string, count: number) {
   const questions = [];
   const questionTypes: QuestionType[] = ['multiple-choice', 'true-false', 'fill-blank'];
-
+  
+  // Use sample questions if available for the category, otherwise use generic
+  const questionPool = SAMPLE_QUESTIONS[category as keyof typeof SAMPLE_QUESTIONS] || 
+    [`Sample ${category} Question 1`, `Sample ${category} Question 2`, `Sample ${category} Question 3`,
+     `Sample ${category} Question 4`, `Sample ${category} Question 5`, `Sample ${category} Question 6`,
+     `Sample ${category} Question 7`, `Sample ${category} Question 8`, `Sample ${category} Question 9`,
+     `Sample ${category} Question 10`];
+  
+  // Shuffle the question pool to randomize questions each time
+  const shuffledQuestions = [...questionPool].sort(() => Math.random() - 0.5);
+  
   for (let i = 1; i <= count; i++) {
     const type = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+    const questionText = shuffledQuestions[(i - 1) % shuffledQuestions.length];
     
     questions.push({
-      id: `${category.toLowerCase()}-q${i}`,
+      id: `${category.toLowerCase()}-q${Math.floor(Math.random() * 1000)}`,
       type,
-      text: `Sample ${category} Question ${i}`,
+      text: questionText,
       points: Math.floor(Math.random() * 3 + 1) * 100,
       timeLimit: Math.floor(Math.random() * 3 + 1) * 15,
       answers: generateMockAnswers(type),
-      explanation: `Explanation for ${category} question ${i}`,
+      explanation: `Explanation for this ${category} question about ${questionText.toLowerCase()}`,
     });
   }
   
