@@ -12,9 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, BookOpen, Trophy, ChartBarIcon } from "lucide-react";
+import { Search, Plus, BookOpen, Trophy, ChartBarIcon, GraduationCap } from "lucide-react";
 import QuizCard from "@/components/quiz/QuizCard";
 import { generateMockQuizzes, CATEGORIES } from "@/utils/mockData";
+import { examSlots } from "@/pages/ExamSlots";
+import ExamSlotCard from "@/components/exam/ExamSlotCard";
 
 const Index = () => {
   const [quizzes] = useState(generateMockQuizzes());
@@ -27,6 +29,16 @@ const Index = () => {
       (quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         quiz.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  // Get popular exam slots (those with fewer available seats)
+  const popularExamSlots = [...examSlots]
+    .sort((a, b) => a.availableSeats - b.availableSeats)
+    .slice(0, 3);
+
+  // Filter entrance exam slots
+  const entranceExams = examSlots.filter(slot => 
+    ["JEE", "NEET", "CAT", "GATE"].includes(slot.examType)
+  ).slice(0, 3);
 
   return (
     <div>
@@ -85,6 +97,25 @@ const Index = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+      </section>
+
+      {/* Exam Slots Section */}
+      <section className="mb-12 pb-6 border-b">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold flex items-center">
+            <GraduationCap className="mr-2 h-5 w-5" />
+            Upcoming Exams
+          </h2>
+          <Button variant="outline" asChild>
+            <Link to="/exam-slots">View All Exams</Link>
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          {entranceExams.map((slot) => (
+            <ExamSlotCard key={slot.id} slot={slot} />
+          ))}
         </div>
       </section>
 
