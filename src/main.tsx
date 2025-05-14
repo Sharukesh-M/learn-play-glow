@@ -11,6 +11,7 @@ import MyQuizzes from './pages/MyQuizzes';
 import Leaderboards from './pages/Leaderboards';
 import NotFound from './pages/NotFound';
 import ExamSlots from './pages/ExamSlots';
+import ExamSlotDetail from './pages/ExamSlotDetail';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: 'my-quizzes', element: <MyQuizzes /> },
       { path: 'leaderboards', element: <Leaderboards /> },
       { path: 'exam-slots', element: <ExamSlots /> },
+      { path: 'exam-slots/:slotId', element: <ExamSlotDetail /> },
       { path: '*', element: <NotFound /> }
     ],
   },

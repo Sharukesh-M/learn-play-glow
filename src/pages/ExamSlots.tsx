@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import { Search, Calendar, BookOpen, GraduationCap, FileSearch } from "lucide-re
 import { Badge } from "@/components/ui/badge";
 
 // Sample exam slot data with realistic images
-const examSlots: ExamSlot[] = [
+export const examSlots: ExamSlot[] = [
   {
     id: "upsc-cse-2025",
     examType: "UPSC",
@@ -195,6 +194,152 @@ const examSlots: ExamSlot[] = [
     imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop",
     registrationDeadline: "December 18, 2024",
     tags: ["English Proficiency", "International Students", "USA"]
+  },
+  
+  // Academic subject exam slots
+  {
+    id: "physics-olympiad-2025",
+    examType: "Physics",
+    name: "International Physics Olympiad 2025",
+    date: "April 15, 2025",
+    time: "10:00 AM - 1:00 PM",
+    location: "Science Academy Centers",
+    availableSeats: 85,
+    imageUrl: "https://images.unsplash.com/photo-1636466497217-26a42372455b?q=80&w=1974&auto=format&fit=crop",
+    registrationDeadline: "February 28, 2025",
+    tags: ["Physics", "Olympiad", "Competition", "Science"]
+  },
+  {
+    id: "physics-board-2025",
+    examType: "Physics",
+    name: "Advanced Physics Board Examination",
+    date: "May 10, 2025",
+    time: "9:00 AM - 12:00 PM",
+    location: "National Testing Centers",
+    availableSeats: 120,
+    imageUrl: "https://images.unsplash.com/photo-1530973428-5bf2db2e4d71?q=80&w=2070&auto=format&fit=crop",
+    registrationDeadline: "April 1, 2025",
+    tags: ["Physics", "Board Exam", "Advanced Level"]
+  },
+  {
+    id: "chemistry-olympiad-2025",
+    examType: "Chemistry",
+    name: "National Chemistry Olympiad 2025",
+    date: "March 25, 2025",
+    time: "10:00 AM - 1:00 PM",
+    location: "Chemistry Research Centers",
+    availableSeats: 95,
+    imageUrl: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=2070&auto=format&fit=crop",
+    registrationDeadline: "January 31, 2025",
+    tags: ["Chemistry", "Olympiad", "Competition", "Science"]
+  },
+  {
+    id: "chemistry-board-2025",
+    examType: "Chemistry",
+    name: "Organic Chemistry Certification",
+    date: "June 5, 2025",
+    time: "9:30 AM - 12:30 PM",
+    location: "University Chemical Labs",
+    availableSeats: 75,
+    imageUrl: "https://images.unsplash.com/photo-1616969233920-9eea88b87555?q=80&w=1964&auto=format&fit=crop",
+    registrationDeadline: "May 1, 2025",
+    tags: ["Chemistry", "Organic", "Certification"]
+  },
+  {
+    id: "biology-olympiad-2025",
+    examType: "Biology",
+    name: "International Biology Olympiad 2025",
+    date: "April 20, 2025",
+    time: "9:00 AM - 12:30 PM",
+    location: "Life Sciences Centers",
+    availableSeats: 110,
+    imageUrl: "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=2069&auto=format&fit=crop",
+    registrationDeadline: "March 1, 2025",
+    tags: ["Biology", "Olympiad", "Competition", "Life Sciences"]
+  },
+  {
+    id: "biology-medical-2025",
+    examType: "Biology",
+    name: "Medical Biology Entrance Exam",
+    date: "July 12, 2025",
+    time: "9:00 AM - 1:00 PM",
+    location: "Medical Universities",
+    availableSeats: 200,
+    imageUrl: "https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2080&auto=format&fit=crop",
+    registrationDeadline: "June 1, 2025",
+    tags: ["Biology", "Medical", "Entrance Exam"]
+  },
+  {
+    id: "math-olympiad-2025",
+    examType: "Mathematics",
+    name: "International Mathematical Olympiad 2025",
+    date: "May 5, 2025",
+    time: "10:00 AM - 1:00 PM",
+    location: "Multiple Centers Worldwide",
+    availableSeats: 90,
+    imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop",
+    registrationDeadline: "March 15, 2025",
+    tags: ["Mathematics", "Olympiad", "Competition"]
+  },
+  {
+    id: "math-advanced-2025",
+    examType: "Mathematics",
+    name: "Advanced Mathematics Certification",
+    date: "June 18, 2025",
+    time: "9:00 AM - 12:00 PM",
+    location: "University Math Departments",
+    availableSeats: 150,
+    imageUrl: "https://images.unsplash.com/photo-1596495577886-d920f1fb7238?q=80&w=1974&auto=format&fit=crop",
+    registrationDeadline: "May 10, 2025",
+    tags: ["Mathematics", "Advanced", "Certification"]
+  },
+  {
+    id: "history-exam-2025",
+    examType: "History",
+    name: "World History Assessment 2025",
+    date: "April 28, 2025",
+    time: "10:00 AM - 1:00 PM",
+    location: "Humanities Centers",
+    availableSeats: 120,
+    imageUrl: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?q=80&w=2074&auto=format&fit=crop",
+    registrationDeadline: "March 15, 2025",
+    tags: ["History", "World History", "Assessment"]
+  },
+  {
+    id: "history-arts-2025",
+    examType: "History",
+    name: "Art History Certification Exam",
+    date: "May 25, 2025",
+    time: "9:00 AM - 12:30 PM",
+    location: "Fine Arts Institutes",
+    availableSeats: 80,
+    imageUrl: "https://images.unsplash.com/photo-1638609269267-f0128098a809?q=80&w=2000&auto=format&fit=crop",
+    registrationDeadline: "April 15, 2025",
+    tags: ["History", "Art History", "Certification"]
+  },
+  {
+    id: "gk-exam-2025",
+    examType: "GK",
+    name: "General Knowledge Assessment 2025",
+    date: "March 20, 2025",
+    time: "10:00 AM - 12:30 PM",
+    location: "Multiple Centers",
+    availableSeats: 175,
+    imageUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1973&auto=format&fit=crop",
+    registrationDeadline: "February 15, 2025",
+    tags: ["General Knowledge", "Current Affairs", "Assessment"]
+  },
+  {
+    id: "gk-current-affairs-2025",
+    examType: "GK",
+    name: "Current Affairs & GK Competition",
+    date: "June 8, 2025",
+    time: "9:30 AM - 12:00 PM",
+    location: "Civic Centers",
+    availableSeats: 200,
+    imageUrl: "https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=2070&auto=format&fit=crop",
+    registrationDeadline: "May 1, 2025",
+    tags: ["General Knowledge", "Current Affairs", "Competition"]
   }
 ];
 
@@ -239,8 +384,8 @@ const ExamSlots: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold mb-3">Exam Slots</h1>
           <p className="text-muted-foreground mb-2 max-w-2xl">
-            Find and book slots for upcoming competitive exams including UPSC, CAT, GATE, IELTS, and more.
-            Register early to secure your preferred testing location and date.
+            Find and book slots for upcoming exams including academic subjects like Physics, Chemistry, Biology, Mathematics, 
+            History and General Knowledge, as well as competitive exams like UPSC, CAT, GATE, and IELTS.
           </p>
           <div className="flex flex-wrap gap-2 mt-2">
             {Array.from(new Set(examSlots.map(slot => slot.examType))).map(type => (
@@ -319,6 +464,7 @@ const ExamSlots: React.FC = () => {
           <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
           <TabsTrigger value="popular">Popular</TabsTrigger>
           <TabsTrigger value="new">Newly Added</TabsTrigger>
+          <TabsTrigger value="academic">Academic Subjects</TabsTrigger>
         </TabsList>
         
         <TabsContent value="all" className="mt-0">
@@ -354,6 +500,16 @@ const ExamSlots: React.FC = () => {
         <TabsContent value="new" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {newlyAddedSlots.map(slot => (
+              <ExamSlotCard key={slot.id} slot={slot} />
+            ))}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="academic" className="mt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {examSlots.filter(slot => 
+              ["Physics", "Chemistry", "Biology", "Mathematics", "History", "GK"].includes(slot.examType)
+            ).map(slot => (
               <ExamSlotCard key={slot.id} slot={slot} />
             ))}
           </div>
