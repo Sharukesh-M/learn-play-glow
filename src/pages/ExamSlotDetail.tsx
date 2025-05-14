@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Clock, GraduationCap, ArrowLeft, MapPin, Users, AlertCircle, CheckCircle } from "lucide-react";
+import { Calendar, Clock, GraduationCap, ArrowLeft, MapPin, Users, AlertCircle, CheckCircle, Image } from "lucide-react";
 import { examSlots } from "./ExamSlots";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -64,7 +64,7 @@ const ExamSlotDetail: React.FC = () => {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full bg-muted">
-                  <ImageIcon className="h-24 w-24 text-muted-foreground/50" />
+                  <Image className="h-24 w-24 text-muted-foreground/50" />
                 </div>
               )}
             </AspectRatio>
@@ -199,3 +199,4 @@ const ExamSlotDetail: React.FC = () => {
 };
 
 export default ExamSlotDetail;
+
