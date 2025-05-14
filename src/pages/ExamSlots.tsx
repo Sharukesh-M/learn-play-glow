@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { 
   Select,
   SelectContent,
@@ -10,7 +11,8 @@ import {
 } from "@/components/ui/select";
 import ExamSlotCard, { ExamSlot } from "@/components/exam/ExamSlotCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { Search, Calendar, BookOpen, GraduationCap, FileSearch } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 // Sample exam slot data with realistic images
 const examSlots: ExamSlot[] = [
@@ -39,6 +41,18 @@ const examSlots: ExamSlot[] = [
     tags: ["Engineering", "ESE", "Technical"]
   },
   {
+    id: "upsc-cms-2025",
+    examType: "UPSC",
+    name: "Combined Medical Services 2025",
+    date: "August 10, 2025",
+    time: "9:00 AM - 12:00 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 165,
+    imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "April 20, 2025",
+    tags: ["Medical", "Healthcare", "Doctor"]
+  },
+  {
     id: "cat-2025",
     examType: "CAT",
     name: "Common Admission Test 2025",
@@ -49,6 +63,18 @@ const examSlots: ExamSlot[] = [
     imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1471&auto=format&fit=crop",
     registrationDeadline: "September 20, 2025",
     tags: ["MBA", "Management", "IIM"]
+  },
+  {
+    id: "cat-iift-2025",
+    examType: "CAT",
+    name: "IIFT MBA Entrance Exam 2025",
+    date: "December 5, 2025",
+    time: "10:00 AM - 12:30 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 178,
+    imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "October 15, 2025",
+    tags: ["MBA", "International Business", "IIFT"]
   },
   {
     id: "gate-2025-cse",
@@ -75,6 +101,30 @@ const examSlots: ExamSlot[] = [
     tags: ["Engineering", "Electrical", "Electronics"]
   },
   {
+    id: "gate-2025-civil",
+    examType: "GATE",
+    name: "Civil Engineering 2025",
+    date: "February 10, 2025",
+    time: "9:30 AM - 12:30 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 210,
+    imageUrl: "https://images.unsplash.com/photo-1581092787765-e3feb951d987?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "October 15, 2024",
+    tags: ["Engineering", "Civil", "Construction"]
+  },
+  {
+    id: "gate-2025-mech",
+    examType: "GATE",
+    name: "Mechanical Engineering 2025",
+    date: "February 11, 2025",
+    time: "2:30 PM - 5:30 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 230,
+    imageUrl: "https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "October 15, 2024",
+    tags: ["Engineering", "Mechanical", "Manufacturing"]
+  },
+  {
     id: "ielts-jan-2025",
     examType: "IELTS",
     name: "IELTS Academic January 2025",
@@ -99,6 +149,18 @@ const examSlots: ExamSlot[] = [
     tags: ["English Proficiency", "Immigration", "Work Visa"]
   },
   {
+    id: "ielts-computer-jan-2025",
+    examType: "IELTS",
+    name: "IELTS Computer-Based Test January 2025",
+    date: "January 25, 2025",
+    time: "10:00 AM - 2:00 PM",
+    location: "British Council Digital Centers",
+    availableSeats: 95,
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "December 20, 2024",
+    tags: ["English Proficiency", "Computer-Based", "Digital"]
+  },
+  {
     id: "gmat-jan-2025",
     examType: "GMAT",
     name: "Graduate Management Admission Test",
@@ -109,6 +171,30 @@ const examSlots: ExamSlot[] = [
     imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1470&auto=format&fit=crop",
     registrationDeadline: "December 20, 2024",
     tags: ["MBA", "Business School", "Management"]
+  },
+  {
+    id: "gmat-feb-2025",
+    examType: "GMAT",
+    name: "GMAT Focus Edition February 2025",
+    date: "February 15, 2025",
+    time: "9:00 AM - 1:00 PM",
+    location: "Pearson VUE Test Centers",
+    availableSeats: 120,
+    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "January 15, 2025",
+    tags: ["MBA", "Business School", "Focus Edition"]
+  },
+  {
+    id: "toefl-jan-2025",
+    examType: "TOEFL",
+    name: "TOEFL iBT January 2025",
+    date: "January 18, 2025",
+    time: "9:00 AM - 1:00 PM",
+    location: "ETS Authorized Test Centers",
+    availableSeats: 130,
+    imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "December 18, 2024",
+    tags: ["English Proficiency", "International Students", "USA"]
   }
 ];
 
@@ -118,7 +204,8 @@ const ExamSlots: React.FC = () => {
   
   const filteredSlots = examSlots.filter(slot => {
     const matchesSearch = slot.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          slot.examType.toLowerCase().includes(searchTerm.toLowerCase());
+                          slot.examType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          slot.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesType = selectedExamType === "all" || slot.examType === selectedExamType;
     
     return matchesSearch && matchesType;
@@ -127,18 +214,64 @@ const ExamSlots: React.FC = () => {
   // Get unique exam types for filter dropdown
   const examTypes = ["all", ...Array.from(new Set(examSlots.map(slot => slot.examType)))];
 
+  // Get today's date for upcoming filter
+  const today = new Date();
+  const upcomingSlots = examSlots
+    .filter(slot => new Date(slot.date) > today)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 6);
+
+  // Popular exams based on fewer available seats (high demand)
+  const popularSlots = [...examSlots]
+    .sort((a, b) => a.availableSeats - b.availableSeats)
+    .slice(0, 6);
+
+  // Newly added (we'll simulate this based on registration deadline being recent)
+  const newlyAddedSlots = [...examSlots]
+    .sort((a, b) => 
+      new Date(b.registrationDeadline).getTime() - new Date(a.registrationDeadline).getTime()
+    )
+    .slice(0, 6);
+
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-3">Exam Slots</h1>
-      <p className="text-muted-foreground mb-6">
-        Find and book slots for upcoming competitive exams including UPSC, CAT, GATE, IELTS, and more
-      </p>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-3">Exam Slots</h1>
+          <p className="text-muted-foreground mb-2 max-w-2xl">
+            Find and book slots for upcoming competitive exams including UPSC, CAT, GATE, IELTS, and more.
+            Register early to secure your preferred testing location and date.
+          </p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {Array.from(new Set(examSlots.map(slot => slot.examType))).map(type => (
+              <Badge 
+                key={type} 
+                variant={selectedExamType === type ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setSelectedExamType(type === selectedExamType ? "all" : type)}
+              >
+                {type}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            <span>Calendar View</span>
+          </Button>
+          <Button className="flex items-center gap-2">
+            <FileSearch className="h-4 w-4" />
+            <span>Find Centers</span>
+          </Button>
+        </div>
+      </div>
       
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search for exams..."
+            placeholder="Search for exams, subjects, or locations..."
             className="pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -156,6 +289,28 @@ const ExamSlots: React.FC = () => {
             ))}
           </SelectContent>
         </Select>
+      </div>
+      
+      <div className="bg-muted/30 p-4 rounded-lg mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 p-3 rounded-full">
+            <GraduationCap className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-bold">Latest Exam Updates</h3>
+            <p className="text-sm text-muted-foreground">New UPSC and GATE dates announced</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 p-3 rounded-full">
+            <BookOpen className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-bold">Exam Preparation</h3>
+            <p className="text-sm text-muted-foreground">Access study materials and mock tests</p>
+          </div>
+        </div>
+        <Button variant="outline" className="shrink-0">View All Resources</Button>
       </div>
       
       <Tabs defaultValue="all">
@@ -182,7 +337,7 @@ const ExamSlots: React.FC = () => {
         
         <TabsContent value="upcoming" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSlots.slice(0, 4).map(slot => (
+            {upcomingSlots.map(slot => (
               <ExamSlotCard key={slot.id} slot={slot} />
             ))}
           </div>
@@ -190,7 +345,7 @@ const ExamSlots: React.FC = () => {
         
         <TabsContent value="popular" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSlots.slice(2, 6).map(slot => (
+            {popularSlots.map(slot => (
               <ExamSlotCard key={slot.id} slot={slot} />
             ))}
           </div>
@@ -198,12 +353,23 @@ const ExamSlots: React.FC = () => {
         
         <TabsContent value="new" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSlots.slice(4, 8).map(slot => (
+            {newlyAddedSlots.map(slot => (
               <ExamSlotCard key={slot.id} slot={slot} />
             ))}
           </div>
         </TabsContent>
       </Tabs>
+      
+      <div className="mt-12 bg-muted/30 rounded-lg p-6 text-center">
+        <h3 className="text-xl font-bold mb-2">Need Help Finding the Right Exam?</h3>
+        <p className="mb-4 max-w-2xl mx-auto text-muted-foreground">
+          Our expert counselors can guide you through the exam selection process based on your career goals and academic background.
+        </p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button>Schedule a Consultation</Button>
+          <Button variant="outline">View Exam FAQs</Button>
+        </div>
+      </div>
     </div>
   );
 };
