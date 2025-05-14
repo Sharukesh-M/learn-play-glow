@@ -2,7 +2,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, GraduationCap } from "lucide-react";
+import { Calendar, Clock, GraduationCap, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -29,11 +29,21 @@ const ExamSlotCard: React.FC<ExamSlotCardProps> = ({ slot }) => {
     <Card className="overflow-hidden h-full flex flex-col transition-all hover:shadow-md">
       <AspectRatio ratio={16/9} className="bg-muted">
         <div className="h-full w-full overflow-hidden">
-          <img 
-            src={slot.imageUrl} 
-            alt={slot.name} 
-            className="object-cover w-full h-full transition-transform hover:scale-105"
-          />
+          {slot.imageUrl ? (
+            <img 
+              src={slot.imageUrl} 
+              alt={slot.name} 
+              className="object-cover w-full h-full transition-transform hover:scale-105"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1470&auto=format&fit=crop";
+              }}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-muted">
+              <ImageIcon className="h-12 w-12 text-muted-foreground/50" />
+            </div>
+          )}
         </div>
       </AspectRatio>
       
