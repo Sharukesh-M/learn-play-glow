@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Clock, GraduationCap, ArrowLeft, MapPin, Users, AlertCircle, CheckCircle, Image } from "lucide-react";
+import { Calendar, Clock, GraduationCap, ArrowLeft, MapPin, Users, AlertCircle, CheckCircle, Image, FileText } from "lucide-react";
 import { examSlots } from "./ExamSlots";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -139,7 +139,35 @@ const ExamSlotDetail: React.FC = () => {
                 and problem-solving sections.
               </p>
               
-              <h3 className="font-bold mt-4 mb-2">Preparation Resources</h3>
+              {slot.sampleQuestions && slot.sampleQuestions.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="font-bold mb-4 flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    Sample Questions
+                  </h3>
+                  <div className="space-y-6">
+                    {slot.sampleQuestions.map((q, idx) => (
+                      <div key={idx} className="border rounded-lg p-4">
+                        <p className="font-medium mb-3">Q{idx+1}: {q.question}</p>
+                        {q.options && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {q.options.map((option, optIdx) => (
+                              <div key={optIdx} className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full border flex items-center justify-center text-xs">
+                                  {String.fromCharCode(65 + optIdx)}
+                                </div>
+                                <span className="text-sm text-muted-foreground">{option}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <h3 className="font-bold mt-6 mb-2">Preparation Resources</h3>
               <ul className="list-disc pl-5 text-muted-foreground space-y-1">
                 <li>Official exam syllabus and guidelines</li>
                 <li>Practice tests and sample questions</li>
@@ -199,4 +227,3 @@ const ExamSlotDetail: React.FC = () => {
 };
 
 export default ExamSlotDetail;
-

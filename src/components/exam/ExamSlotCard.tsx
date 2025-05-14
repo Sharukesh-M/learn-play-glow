@@ -2,7 +2,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, GraduationCap, ImageIcon } from "lucide-react";
+import { Calendar, Clock, GraduationCap, ImageIcon, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -18,6 +18,10 @@ export interface ExamSlot {
   imageUrl: string;
   registrationDeadline: string;
   tags: string[];
+  sampleQuestions?: {
+    question: string;
+    options?: string[];
+  }[];
 }
 
 interface ExamSlotCardProps {
@@ -69,6 +73,16 @@ const ExamSlotCard: React.FC<ExamSlotCardProps> = ({ slot }) => {
             <span>{slot.location}</span>
           </div>
         </div>
+        
+        {slot.sampleQuestions && slot.sampleQuestions.length > 0 && (
+          <div className="mb-4 border rounded-md p-3 bg-muted/30">
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">Sample Question</span>
+            </div>
+            <p className="text-sm line-clamp-2">{slot.sampleQuestions[0].question}</p>
+          </div>
+        )}
         
         <div className="mt-auto">
           <div className="text-xs text-muted-foreground mb-2">

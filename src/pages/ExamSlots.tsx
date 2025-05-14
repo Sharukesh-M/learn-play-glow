@@ -340,7 +340,183 @@ export const examSlots: ExamSlot[] = [
     imageUrl: "https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=2070&auto=format&fit=crop",
     registrationDeadline: "May 1, 2025",
     tags: ["General Knowledge", "Current Affairs", "Competition"]
-  }
+  },
+  
+  // Adding NEET exam slots
+  {
+    id: "neet-2025-may",
+    examType: "NEET",
+    name: "National Eligibility cum Entrance Test 2025",
+    date: "May 5, 2025",
+    time: "2:00 PM - 5:00 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 180,
+    imageUrl: "https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2080&auto=format&fit=crop",
+    registrationDeadline: "December 15, 2024",
+    tags: ["Medical", "MBBS", "BDS", "AYUSH"],
+    sampleQuestions: [
+      {
+        question: "The maximum work is obtained from a heat engine when the process is:",
+        options: ["Isothermal", "Adiabatic", "Reversible", "Irreversible"]
+      },
+      {
+        question: "Oxygen is carried by hemoglobin as:",
+        options: ["Oxyhemoglobin", "Carboxyhemoglobin", "Carbaminohemoglobin", "Deoxyhemoglobin"]
+      }
+    ]
+  },
+  {
+    id: "neet-2025-june",
+    examType: "NEET",
+    name: "NEET Special Session 2025",
+    date: "June 10, 2025",
+    time: "2:00 PM - 5:00 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 150,
+    imageUrl: "https://images.unsplash.com/photo-1583911860284-88de8e798bdb?q=80&w=2070&auto=format&fit=crop",
+    registrationDeadline: "April 30, 2025",
+    tags: ["Medical", "MBBS", "BDS", "AYUSH"],
+    sampleQuestions: [
+      {
+        question: "Which of the following hormones is a steroid?",
+        options: ["Insulin", "Estrogen", "Oxytocin", "Glucagon"]
+      },
+      {
+        question: "The functional unit of kidney is:",
+        options: ["Neuron", "Nephron", "Axon", "Dendron"]
+      }
+    ]
+  },
+  
+  // Adding JEE exam slots
+  {
+    id: "jee-main-2025-jan",
+    examType: "JEE",
+    name: "JEE Main January Session 2025",
+    date: "January 15-31, 2025",
+    time: "9:00 AM - 12:00 PM",
+    location: "Computer-Based Test Centers",
+    availableSeats: 220,
+    imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop",
+    registrationDeadline: "November 30, 2024",
+    tags: ["Engineering", "B.Tech", "B.Arch", "B.Planning"],
+    sampleQuestions: [
+      {
+        question: "If vectors a, b, c are unit vectors such that a + b + c = 0, then the value of a·b + b·c + c·a is:",
+        options: ["-3/2", "-2", "-1", "-1/2"]
+      },
+      {
+        question: "The compound formed when ethyl magnesium bromide reacts with methanol is:",
+        options: ["Ethane", "Methyl ethyl ether", "Ethanol", "Methane"]
+      }
+    ]
+  },
+  {
+    id: "jee-advanced-2025",
+    examType: "JEE",
+    name: "JEE Advanced 2025",
+    date: "June 1, 2025",
+    time: "9:00 AM - 12:00 PM & 2:30 PM - 5:30 PM",
+    location: "Selected Test Centers",
+    availableSeats: 160,
+    imageUrl: "https://images.unsplash.com/photo-1596495577886-d920f1fb7238?q=80&w=1974&auto=format&fit=crop",
+    registrationDeadline: "May 10, 2025",
+    tags: ["IIT", "Advanced Engineering", "B.Tech"],
+    sampleQuestions: [
+      {
+        question: "A particle is moving in a circular path of radius r with a constant speed v. The angular momentum of the particle about the center is:",
+        options: ["mrv", "mr²v", "mv²r", "mv/r"]
+      },
+      {
+        question: "The hybridization of carbon in fullerene (C₆₀) is:",
+        options: ["sp", "sp²", "sp³", "dsp²"]
+      }
+    ]
+  },
+  
+  // Adding additional CAT exam slots
+  {
+    id: "cat-2025-nov",
+    examType: "CAT",
+    name: "Common Admission Test November 2025",
+    date: "November 28, 2025",
+    time: "9:00 AM - 12:00 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 312,
+    imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1471&auto=format&fit=crop",
+    registrationDeadline: "September 20, 2025",
+    tags: ["MBA", "Management", "IIM"],
+    sampleQuestions: [
+      {
+        question: "If x² + y² = 25 and xy = 12, then the value of (x + y)² is:",
+        options: ["25", "36", "49", "64"]
+      },
+      {
+        question: "In a class of 60 students, 30 students passed in Mathematics, 32 passed in Physics and 24 passed in Chemistry. 12 students passed in Mathematics and Physics, 10 passed in Physics and Chemistry and 8 passed in Mathematics and Chemistry. If 6 students passed in all three subjects, then the number of students who failed in all three subjects is:",
+        options: ["6", "8", "10", "12"]
+      }
+    ]
+  },
+  {
+    id: "cat-xat-2025",
+    examType: "CAT",
+    name: "XAT Exam 2025",
+    date: "January 5, 2025",
+    time: "10:00 AM - 1:00 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 240,
+    imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "December 10, 2024",
+    tags: ["MBA", "XLRI", "Management"],
+    sampleQuestions: [
+      {
+        question: "What is the difference between ethical decision-making and legal compliance?",
+        options: ["They are the same", "Ethics focuses on what is right, while law focuses on what is legal", "Laws are more important than ethics", "Ethics are only relevant in philosophy"]
+      }
+    ]
+  },
+  
+  // Adding additional GATE exam slots
+  {
+    id: "gate-2025-cse",
+    examType: "GATE",
+    name: "Computer Science and Engineering 2025",
+    date: "February 8, 2025",
+    time: "9:30 AM - 12:30 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 276,
+    imageUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "October 15, 2024",
+    tags: ["Engineering", "Computer Science", "IT"],
+    sampleQuestions: [
+      {
+        question: "Which of the following sorting algorithms has the best average-case time complexity?",
+        options: ["Bubble Sort", "Insertion Sort", "Quick Sort", "Selection Sort"]
+      },
+      {
+        question: "What is the time complexity of binary search algorithm?",
+        options: ["O(n)", "O(log n)", "O(n log n)", "O(n²)"]
+      }
+    ]
+  },
+  {
+    id: "gate-2025-eee",
+    examType: "GATE",
+    name: "Electrical Engineering 2025",
+    date: "February 9, 2025",
+    time: "2:30 PM - 5:30 PM",
+    location: "Multiple Centers Across India",
+    availableSeats: 198,
+    imageUrl: "https://images.unsplash.com/photo-1495954484750-af469f2f9be5?q=80&w=1470&auto=format&fit=crop",
+    registrationDeadline: "October 15, 2024",
+    tags: ["Engineering", "Electrical", "Electronics"],
+    sampleQuestions: [
+      {
+        question: "The thevenin equivalent voltage across terminals A and B is:",
+        options: ["5V", "10V", "15V", "20V"]
+      }
+    ]
+  },
 ];
 
 const ExamSlots: React.FC = () => {
@@ -384,8 +560,9 @@ const ExamSlots: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold mb-3">Exam Slots</h1>
           <p className="text-muted-foreground mb-2 max-w-2xl">
-            Find and book slots for upcoming exams including academic subjects like Physics, Chemistry, Biology, Mathematics, 
-            History and General Knowledge, as well as competitive exams like UPSC, CAT, GATE, and IELTS.
+            Find and book slots for upcoming exams including JEE, NEET, CAT, GATE, as well as 
+            academic subjects like Physics, Chemistry, Biology, Mathematics, 
+            History and General Knowledge.
           </p>
           <div className="flex flex-wrap gap-2 mt-2">
             {Array.from(new Set(examSlots.map(slot => slot.examType))).map(type => (
@@ -443,7 +620,7 @@ const ExamSlots: React.FC = () => {
           </div>
           <div>
             <h3 className="font-bold">Latest Exam Updates</h3>
-            <p className="text-sm text-muted-foreground">New UPSC and GATE dates announced</p>
+            <p className="text-sm text-muted-foreground">New JEE and NEET dates announced</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -464,6 +641,7 @@ const ExamSlots: React.FC = () => {
           <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
           <TabsTrigger value="popular">Popular</TabsTrigger>
           <TabsTrigger value="new">Newly Added</TabsTrigger>
+          <TabsTrigger value="entrance">Entrance Exams</TabsTrigger>
           <TabsTrigger value="academic">Academic Subjects</TabsTrigger>
         </TabsList>
         
@@ -500,6 +678,16 @@ const ExamSlots: React.FC = () => {
         <TabsContent value="new" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {newlyAddedSlots.map(slot => (
+              <ExamSlotCard key={slot.id} slot={slot} />
+            ))}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="entrance" className="mt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {examSlots.filter(slot => 
+              ["JEE", "NEET", "CAT", "GATE"].includes(slot.examType)
+            ).map(slot => (
               <ExamSlotCard key={slot.id} slot={slot} />
             ))}
           </div>
